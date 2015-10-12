@@ -1,3 +1,5 @@
+var url = require('url');
+
 /**
  * Force SSL.
  *
@@ -18,8 +20,9 @@ module.exports = function enforceHTTPS(port, hostname, ignoreUrl, temporary) {
     }
 
     var httpsPort = port || 443;
-    var redirectTo = 'https://';
-    redirectTo += hostname || this.request.hostname;
+    var urlObject = url.parse('http://' + this.request.header.host);
+    var httpsHost = hostname || urlObject.hostname;
+    var redirectTo = 'https://' + httpsHost + ':' + httpsPort;
 
     if(!ignoreUrl) {
       redirectTo += this.request.url;
@@ -29,6 +32,6 @@ module.exports = function enforceHTTPS(port, hostname, ignoreUrl, temporary) {
       this.response.status = 301;
     }
 
-    this.response.redirect(redirectTo + ':' + httpsPort);
+    this.response.redirect(redirectTo);
   };
 };
