@@ -1,0 +1,9 @@
+{
+  "predef": [
+    "require",
+    "module"
+  ],
+  "undef": true,
+  "unused": true,
+  "esnext": true
+}
