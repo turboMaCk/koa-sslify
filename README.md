@@ -16,14 +16,14 @@ $ npm install koa-sslify
 
 * trustProtoHeader - trust `x-forwarded-proto` header from Heroku or nodejitsu (default is false)
 * trustAzureHeader - trust Azure's `x-arr-ssl` header (default is false)
-* port - SSL port (default value: 443)
+* port - HTTPS port (default value: 443)
 * hostname - host name for redirect (by default will redirect to same host)
 * ignoreURL - ignore request url ­ redirect all request to root (default is false)
 * temporary - use "302 Temporary Redirect" (by default will use "301 Permanent Redirect")
 
 ## Reverse Proxies (Heroku, nodejitsu and others)
 
-Heroku, nodejitsu and other hosters often use reverse proxies which offer SSL endpoints but then forward unencrypted HTTP traffic to the website. This makes it difficult to detect if the original request was indeed via HTTPS. Luckily, most reverse proxies set the `x-forwarded-proto` header flag with the original request scheme. express-sslify is ready for such scenarios, but you have to specifically request the evaluation of this flag:
+Heroku, nodejitsu and other hosters often use reverse proxies which offer SSL endpoints but then forward unencrypted HTTP traffic to the website. This makes it difficult to detect if the original request was indeed via HTTPS. Luckily, most reverse proxies set the `x-forwarded-proto` header flag with the original request scheme. koa-sslify is ready for such scenarios, but you have to specifically request the evaluation of this flag:
 
 `app.use(enforceHttps(true))`
 
@@ -31,7 +31,7 @@ Please do *not* set this flag if you are not behind a proxy that is setting this
 
 ## Azure support
 
-Azure has a slightly different way of signaling encrypted connections. To tell express-sslify to look out for Azure's x-arr-ssl header do the following:
+Azure has a slightly different way of signaling encrypted connections. To tell koa-sslify to look out for Azure's x-arr-ssl header do the following:
 
 `app.use(enforceHttps(false, true))`
 
@@ -75,7 +75,7 @@ var enforceHttps = require('koa-sslify');
 
 var app = koa();
 
-// Force SSL on all page
+// Force HTTPS on all page
 app.use(enforceHttps(true));
 
 // index page
