@@ -1,6 +1,6 @@
 {
   "name": "koa-sslify",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Enforces HTTPS for node.js koa projects",
   "main": "index.js",
   "scripts": {
