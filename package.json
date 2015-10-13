@@ -1,7 +1,7 @@
 {
   "name": "koa-sslify",
   "version": "0.0.2",
-  "description": "Enforces SSL for node.js koa projects",
+  "description": "Enforces HTTPS for node.js koa projects",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
