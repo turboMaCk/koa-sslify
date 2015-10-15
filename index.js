@@ -43,7 +43,7 @@ function applyOptions(options) {
 module.exports = function enforceHTTPS(options) {
   options = applyOptions(options);
 
-  return function* enforceHTTPS(next) {
+  return function * enforceHTTPS (next) {
 
     // First, check if directly requested via https
     var secure = this.secure;
