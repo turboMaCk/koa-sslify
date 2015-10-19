@@ -7,6 +7,7 @@ var defaults = {
   trustProtoHeader: false,
   trustAzureHeader: false,
   port: 443,
+  hostname: null,
   ignoreUrl: false,
   temporary: false
 };
