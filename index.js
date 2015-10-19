@@ -19,11 +19,13 @@ var defaults = {
  * @api private
  */
 function applyOptions(options) {
-   for (var option in options) {
-     defaults[option] = options[option];
-   }
+  var settings = {};
+  options = options || {};
+  for (var option in defaults) {
+   settings[option] = options[option] || defaults[option];
+  }
 
-   return defaults;
+  return settings;
 }
 
 /**
