@@ -56,7 +56,7 @@ describe('Heroku-style proxy SSL flag', function() {
     it('should redirect if activated but wrong flag set', function (done) {
       subject
         .get('/ssl')
-            .set('x-arr-ssl', 'https')
+          .set('x-arr-ssl', 'https')
         .expect(301)
         .expect('location', new RegExp('^https://[\\S]*/ssl$'), done);
     });

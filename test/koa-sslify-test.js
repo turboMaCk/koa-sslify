@@ -22,7 +22,7 @@ describe('HTTPS not enforced', function() {
 
   it('should accept non-ssl POST requests', function (done) {
     subject
-      .post('/non-ssl-post')
+      .post('/non-ssl')
       .expect(200, 'OK', done);
   });
 });
