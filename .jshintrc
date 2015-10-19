@@ -1,7 +1,9 @@
 {
   "predef": [
     "require",
-    "module"
+    "module",
+    "describe",
+    "it"
   ],
   "undef": true,
   "unused": true,

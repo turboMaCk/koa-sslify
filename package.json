@@ -5,10 +5,13 @@
   "main": "index.js",
   "repository": "https://github.com/turboMaCk/koa-sslify.git",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/mocha --recursive --harmony"
   },
   "devDependencies": {
-    "koa": "^0.6.0"
+    "chai": "^3.3.0",
+    "koa": "^0.6.0",
+    "mocha": "^2.3.3",
+    "supertest-koa-agent": "^0.2.1"
   },
   "keywords": [
     "koa",
