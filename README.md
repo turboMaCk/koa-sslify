@@ -1,4 +1,7 @@
 # Koa SSLify
+[![Build Status](https://travis-ci.org/turboMaCk/koa-sslify.svg)](https://travis-ci.org/turboMaCk/koa-sslify)
+[![Code Climate](https://codeclimate.com/github/turboMaCk/koa-sslify/badges/gpa.svg)](https://codeclimate.com/github/turboMaCk/koa-sslify)
+[![npm version](https://badge.fury.io/js/koa-sslify.svg)](https://badge.fury.io/js/koa-sslify)
 
 This simple [Koa.js](http://koajs.com/) middleware enforces HTTPS connections on any incoming requests.
 In case of a non-encrypted HTTP request, koa-sslify automatically redirects to an HTTPS address using a 301 permanent redirect.
@@ -95,6 +98,14 @@ app.use(function * (next) {
 
 app.listen(3000);
 ```
+
+## Build localy
+- `git clone git@github.com:turboMaCk/koa-sslify.git`
+- `cd koa-sslify`
+- `npm install`
+
+### Run tests
+- `npm test`
 
 ## License
 MIT
