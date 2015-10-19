@@ -18,12 +18,12 @@ $ npm install koa-sslify
 **return:** {Fuction}
 
 ### Available Options
-* `trustProtoHeader` - trust `x-forwarded-proto` header from Heroku or nodejitsu (default is false)
-* `trustAzureHeader` - trust Azure's `x-arr-ssl` header (default is false)
-* `port` - HTTPS port (default value: 443)
-* `hostname` - host name for redirect (by default will redirect to same host)
-* `ignoreUrl` - ignore request url ­ redirect all request to root (default is false)
-* `temporary` - use "302 Temporary Redirect" (by default will use "301 Permanent Redirect")
+* `trustProtoHeader [Boolean]` - trust `x-forwarded-proto` header from Heroku or nodejitsu (default is false)
+* `trustAzureHeader [Boolean]` - trust Azure's `x-arr-ssl` header (default is false)
+* `port [Integer]` - HTTPS port (default value: 443)
+* `hostname [String]` - host name for redirect (by default will redirect to same host)
+* `ignoreUrl [Boolean]` - ignore request url ­ redirect all request to root (default is false)
+* `temporary [Boolean]` - use "302 Temporary Redirect" (by default will use "301 Permanent Redirect")
 
 ## Reverse Proxies (Heroku, nodejitsu and others)
 
