@@ -3,7 +3,7 @@ var koa = require('koa');
 var agent = require('supertest-koa-agent');
 var enforce = require('../index.js');
 
-describe('HTTPS not enforced', function() {
+describe('HTTPS not enforced', function () {
 
   var app = koa();
 
@@ -39,7 +39,7 @@ describe('HTTPS enforced', function() {
     yield next;
   });
 
-  var subject =  agent(app);
+  var subject = agent (app);
 
   it('should redirect non-SSL GET requests to HTTPS', function (done) {
     subject
@@ -55,3 +55,61 @@ describe('HTTPS enforced', function() {
   //});
 });
 
+describe('Custom port', function () {
+
+  it('should redirect to 443 by default', function (done) {
+    var app = koa();
+    app.use(enforce());
+
+    agent(app)
+      .get('/ssl')
+      .expect(301)
+      .expect('location', new RegExp('^https://[\\S]*\:443/ssl$'), done);
+  });
+
+  it('should redirect to specified port', function (done) {
+    var app = koa();
+    app.use(enforce({ port: 3001 }));
+
+    agent(app)
+      .get('/ssl')
+      .expect(301)
+      .expect('location', new RegExp('^https://[\\S]*\:3001/ssl$'), done);
+  });
+});
+
+describe('hostname', function() {
+
+  it('shold redirect to same host by default', function (done) {
+    var app = koa();
+    app.use(enforce());
+
+    agent(app)
+      .get('/ssl')
+      .expect(301)
+      .expect('location', new RegExp('^https://127.0.0.1[\\S]*/ssl$'), done);
+  });
+
+  it('should redirect to specified host', function (done) {
+    var app = koa();
+    app.use(enforce({ hostname: 'github.com' }));
+
+    agent(app)
+      .get('/ssl')
+      .expect(301)
+      .expect('location', new RegExp('^https://github.com[\\S]*/ssl$'), done);
+  });
+});
+
+describe('ignore url', function () {
+
+  it('should ignore url', function (done) {
+    var app = koa();
+    app.use(enforce({ ignoreUrl: true }));
+
+    agent(app)
+      .get('/ssl')
+      .expect(301)
+      .expect('location', new RegExp('^https:[\\S]*:443$'), done);
+  });
+});
