@@ -9,15 +9,31 @@ var defaults = {
   port: 443,
   hostname: null,
   ignoreUrl: false,
-  temporary: false
+  temporary: false,
+  redirectMethods: ['GET', 'HEAD'],
+  internalRedirectMethods: []
 };
+
+/**
+ * Is item in array
+ *   @param    {String/array/number/object}   item
+ *   @param    {Array}                        array
+ *   @return   {Boolean}
+ *   @api      private
+ */
+function isInArray(item, array) {
+    for(var i = 0; i < array.length; i++) {
+      if(array[i] === item) { return true; }
+    }
+    return false;
+}
 
 /**
  * Apply options
  *
- * @param {Hash} options
- * @return {Hash}
- * @api private
+ *   @param    {Hash}    options
+ *   @return   {Hash}
+ *   @api      private
  */
 function applyOptions(options) {
   var settings = {};
@@ -30,17 +46,27 @@ function applyOptions(options) {
 }
 
 /**
+ * Check if method is allowed in settings
+ *   @param    {String}    method
+ *   @param    {Hash}      options
+ *   @return   {Boolean}
+ */
+function isAllowed(method, settings) {
+  return isInArray(method, settings.redirectMethods) || isInArray(method, settings.internalRedirectMethods);
+}
+
+/**
  * enforceHTTPS
  *
- * @param {Hash} options
- *  @param {Boolean} trustProtoHeader
- *  @param {Boolean} trustAzureHeader
- *  @param {Integer} port
- *  @param {String} hostname
- *  @param {Boolean} ignoreUrl
- *  @param {Boolean} temporary
- *  @return {Function}
- * @api public
+ *   @param    {Hash}       options
+ *   @param    {Boolean}    options[trustProtoHeader]
+ *   @param    {Boolean}    options[trustAzureHeader]
+ *   @param    {Integer}    options[port]
+ *   @param    {String}     options[hostname]
+ *   @param    {Boolean}    options[ignoreUrl]
+ *   @param    {Boolean}    options[temporary]
+ *   @return   {Function}
+ *   @api      public
  */
 
 module.exports = function enforceHTTPS(options) {
@@ -67,6 +93,12 @@ module.exports = function enforceHTTPS(options) {
       return yield next;
     }
 
+    // Check if method should be Forbidden
+    if (!isAllowed(this.method, options)) {
+      this.response.status = 403;
+      return;
+    }
+
     // build redirect url
     var httpsHost = options.hostname || url.parse('http://' + this.request.header.host).hostname;
     var redirectTo = 'https://' + httpsHost + ':' + options.port;
@@ -75,7 +107,10 @@ module.exports = function enforceHTTPS(options) {
       redirectTo += this.request.url;
     }
 
-    if (!options.temporary) {
+    // Check if should internal or permanently redirect
+    if (isInArray(this.method, options.internalRedirectMethods)) {
+      this.response.status = 307;
+    } else if (!options.temporary) {
       this.response.status = 301;
     }
 

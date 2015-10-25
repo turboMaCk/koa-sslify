@@ -20,6 +20,12 @@ describe('HTTPS not enforced', function () {
       .expect(200, 'OK', done);
   });
 
+  it('should accept non-ssl HEAD requests', function (done) {
+    subject
+      .head('/non-ssl')
+      .expect(200, done);
+  });
+
   it('should accept non-ssl POST requests', function (done) {
     subject
       .post('/non-ssl')
@@ -48,11 +54,18 @@ describe('HTTPS enforced', function() {
       .expect('location', new RegExp('^https://[\\S]*/ssl$'), done);
   });
 
-  //it('should send error for non-SSL POST requests', function (done) {
-    //subject
-      //.post('/non-ssl-post')
-      //.expect(403, done);
-  //});
+  it('should redirect non-SSL HEAD requests to HTTPS', function (done) {
+    subject
+      .head('/ssl')
+      .expect(301)
+      .expect('location', new RegExp('^https://[\\S]*/ssl$'), done);
+  });
+
+  it('should send error for non-SSL POST requests', function (done) {
+    subject
+      .post('/non-ssl-post')
+      .expect(403, done);
+  });
 });
 
 describe('Custom port', function () {
@@ -101,7 +114,7 @@ describe('hostname', function() {
   });
 });
 
-describe('ignore url', function () {
+describe('ignore url', function() {
 
   it('should ignore url', function (done) {
     var app = koa();
@@ -113,3 +126,66 @@ describe('ignore url', function () {
       .expect('location', new RegExp('^https:[\\S]*:443$'), done);
   });
 });
+
+describe('temporary', function() {
+
+  it('should be temporary redirected', function (done) {
+    var app = koa();
+    app.use(enforce({ temporary: true }));
+
+    agent(app)
+      .get('/ssl')
+      .expect(302, done);
+  });
+});
+
+describe('custom redirect Methods', function () {
+
+  var app = koa();
+  app.use(enforce({ redirectMethods: ['OPTIONS', 'GET'] }));
+  var subject = agent(app);
+
+  if('should redirect GET', function (done) {
+    subject
+      .get('/ssl')
+      .expect(302, done);
+  });
+
+  if('should redirect OPTIONS', function (done) {
+    subject
+      .options('/ssl')
+      .expect(302, done);
+  });
+
+  if('should not redirect HEAD', function (done) {
+    subject
+      .head('/ssl')
+      .expect(403, done);
+  });
+});
+
+describe('should define internal redirect methods', function() {
+
+  var app = koa();
+  app.use(enforce({ internalRedirectMethods: ['POST', 'PUT'] }));
+  var subject = agent(app);
+
+  it('should internal redirect POST', function (done) {
+    subject
+    .post('/ssl')
+    .expect(307, done);
+  });
+
+  it('should internal redirect PUT', function (done) {
+    subject
+    .put('/ssl')
+    .expect(307, done);
+  });
+
+  it('should not internal redirect DELETE', function (done) {
+    subject
+    .delete('/ssl')
+    .expect(403, done);
+  });
+});
+
