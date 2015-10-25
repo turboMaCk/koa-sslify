@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0
+- Add method based handling when redirecting
+  - whitelist methods for `301/302` redirect (defaults: `GET`, `HEAD`)
+  - whitelist methods for `307` redirect (defaults: none)
+  - respond with `403` to all other methods
+
 ## 0.1.2
 - fix `hostname` option
 - more tests
