@@ -65,6 +65,8 @@ function isAllowed(method, settings) {
  *   @param    {String}     options[hostname]
  *   @param    {Boolean}    options[ignoreUrl]
  *   @param    {Boolean}    options[temporary]
+ *   @param    {Array}      options[redirectMethods]
+ *   @param    {Array}      options[internalRedirectMethods]
  *   @return   {Function}
  *   @api      public
  */

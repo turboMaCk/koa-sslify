@@ -21,12 +21,14 @@ $ npm install koa-sslify
 **return:** {Fuction}
 
 ### Available Options
-* `trustProtoHeader [Boolean]` - trust `x-forwarded-proto` header from Heroku or nodejitsu (default is false)
-* `trustAzureHeader [Boolean]` - trust Azure's `x-arr-ssl` header (default is false)
-* `port [Integer]` - HTTPS port (default value: 443)
+* `trustProtoHeader [Boolean]` - trust `x-forwarded-proto` header from Heroku or nodejitsu (default is `false`)
+* `trustAzureHeader [Boolean]` - trust Azure's `x-arr-ssl` header (default is `false`)
+* `port [Integer]` - HTTPS port (default value: `443`)
 * `hostname [String]` - host name for redirect (by default will redirect to same host)
-* `ignoreUrl [Boolean]` - ignore request url ­ redirect all request to root (default is false)
-* `temporary [Boolean]` - use "302 Temporary Redirect" (by default will use "301 Permanent Redirect")
+* `ignoreUrl [Boolean]` - ignore request url ­ redirect all request to root (default is `false`)
+* `temporary [Boolean]` - use "302 Temporary Redirect" (by default will use `301 Permanent Redirect`)
+* `redirectMethods [Array]` - Whitelist methods that should be redirected (by default `['GET', 'HEAD']`)
+* `internalRedirectMethods [Array]` - Whitelist methods for 307 internal redirect (by default `[]`)
 
 ## Reverse Proxies (Heroku, nodejitsu and others)
 
@@ -98,6 +100,19 @@ app.use(function * (next) {
 
 app.listen(3000);
 ```
+
+## Advanced Redirect setting
+
+### Redirect methods
+By default only `GET` and `HEAD` methods are whitelisted for redirect.
+koa-sslify will respond with `403` on all other methods.
+You can change whitelisted methods by passing `redirectMethods` array to options.
+
+### Internal redirect support [POST/PUT]
+**By default there is no HTTP(S) methods whitelisted for 307 internal redirect.**
+You can define custom whitelist of methods for `307` by passing `internalRedirectMethods` array to options.
+This should be useful if you want to support `POST` and `PUT` delegation from `HTTP` to `HTTPS`.
+For more info see [this](http://www.checkupdown.com/status/E307.html) article.
 
 ## Build localy
 - `git clone git@github.com:turboMaCk/koa-sslify.git`
