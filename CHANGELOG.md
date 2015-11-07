@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.1
+- Avoid install warnings with latest node versions
+
 ## 1.0.0
 - Add method based handling when redirecting
   - whitelist methods for `301/302` redirect (defaults: `GET`, `HEAD`)
