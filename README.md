@@ -24,14 +24,14 @@ $ npm install koa-sslify
 * `trustProtoHeader [Boolean]` - trust `x-forwarded-proto` header from Heroku or nodejitsu (default is `false`)
 * `trustAzureHeader [Boolean]` - trust Azure's `x-arr-ssl` header (default is `false`)
 * `port [Integer]` - HTTPS port (default value: `443`)
-* `skipDefaultPort [Boolean]` - Skip adding the port when value is default (default value: `true`)
 * `hostname [String]` - host name for redirect (by default will redirect to same host)
 * `ignoreUrl [Boolean]` - ignore request url ­ redirect all request to root (default is `false`)
 * `temporary [Boolean]` - use "302 Temporary Redirect" (by default will use `301 Permanent Redirect`)
+* `skipDefaultPort [Boolean]` - Skip port in redirect URL if it's `443` (default value: `true`)
 * `redirectMethods [Array]` - Whitelist methods that should be redirected (by default `['GET', 'HEAD']`)
 * `internalRedirectMethods [Array]` - Whitelist methods for 307 internal redirect (by default `[]`)
 
-## Reverse Proxies (Heroku, nodejitsu and others)
+## Reverse Proxies (Heroku, Nodejitsu and others)
 
 Heroku, nodejitsu and other hosters often use reverse proxies which offer SSL endpoints but then forward unencrypted HTTP traffic to the website. This makes it difficult to detect if the original request was indeed via HTTPS. Luckily, most reverse proxies set the `x-forwarded-proto` header flag with the original request scheme. koa-sslify is ready for such scenarios, but you have to specifically request the evaluation of this flag:
 
@@ -41,7 +41,7 @@ Heroku, nodejitsu and other hosters often use reverse proxies which offer SSL en
 
 Please do *not* set this flag if you are not behind a proxy that is setting this flag as such flags can be easily spoofed in a direct client/server connection.
 
-## Azure support
+## Azure Support
 
 Azure has a slightly different way of signaling encrypted connections. To tell koa-sslify to look out for Azure's x-arr-ssl header do the following:
 
@@ -53,7 +53,7 @@ Please do *not* set this flag if you are not behind an Azure proxy as this flag 
 
 ## Usage
 
-### Without reverse proxy
+### Without Reverse Proxy
 ```javascript
 var koa = require('koa');
 var http = require('http');
@@ -82,7 +82,7 @@ http.createServer(app.callback()).listen(80);
 https.createServer(options, app.callback()).listen(443);
 ```
 
-### With reverse proxy
+### With Reverse Proxy
 ```javascript
 var koa = require('koa');
 var enforceHttps = require('koa-sslify');
@@ -102,18 +102,26 @@ app.use(function * (next) {
 app.listen(3000);
 ```
 
-## Advanced Redirect setting
+## Advanced Redirect Setting
 
-### Redirect methods
+### Redirect Methods
 By default only `GET` and `HEAD` methods are whitelisted for redirect.
 koa-sslify will respond with `403` on all other methods.
 You can change whitelisted methods by passing `redirectMethods` array to options.
 
-### Internal redirect support [POST/PUT]
+### Internal Redirect Support [POST/PUT]
 **By default there is no HTTP(S) methods whitelisted for 307 internal redirect.**
 You can define custom whitelist of methods for `307` by passing `internalRedirectMethods` array to options.
 This should be useful if you want to support `POST` and `PUT` delegation from `HTTP` to `HTTPS`.
 For more info see [this](http://www.checkupdown.com/status/E307.html) article.
+
+### Skip Default Port in Redirect URL
+**By default this plugin exclude port from redirect url if it's set to `443`.**
+Since `443` is default port for `HTTPS` browser will use it by default anyway so there
+is no need to explicitly return it as part of URL. Anyway in case you need to **always return port as part of URL string**
+you can pass options with `skipDefaultPort: false` to do the trick.
+
+*Thanks to [@MathRobin](https://github.com/MathRobin) from implentation of this as well as port skipping itself.*
 
 ## Build localy
 - `git clone git@github.com:turboMaCk/koa-sslify.git`
@@ -131,4 +139,3 @@ This project is heavily inspired by [Florian Heinemann's](https://github.com/flo
 and [Vitaly Domnikov's](https://github.com/dotcypress) [koa-force-ssl](https://github.com/dotcypress/koa-force-ssl).
 
 With [love, internet style](https://www.youtube.com/watch?v=Xe1TZaElTAs).
-

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.0
+- Skip `403` port in URL by default
+  - new option `skipDefaultPort` to disable this beaviour
+  - *CREDITS: [@MathRobin](https://github.com/MathRobin)*
+
 ## 1.0.1
 - Avoid install warnings with latest node versions
 
