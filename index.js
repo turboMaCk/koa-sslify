@@ -8,6 +8,7 @@ var defaults = {
   trustAzureHeader: false,
   port: 443,
   hostname: null,
+  skipPort: false,
   ignoreUrl: false,
   temporary: false,
   redirectMethods: ['GET', 'HEAD'],
@@ -103,7 +104,7 @@ module.exports = function enforceHTTPS(options) {
 
     // build redirect url
     var httpsHost = options.hostname || url.parse('http://' + this.request.header.host).hostname;
-    var redirectTo = 'https://' + httpsHost + ':' + options.port;
+    var redirectTo = 'https://' + httpsHost + (options.skipPort ? '' : ':' + options.port);
 
     if(!options.ignoreUrl) {
       redirectTo += this.request.url;

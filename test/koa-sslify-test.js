@@ -127,6 +127,19 @@ describe('ignore url', function() {
   });
 });
 
+describe('skip port', function() {
+
+  it('should skip port', function (done) {
+    var app = koa();
+    app.use(enforce({ skipPort: true }));
+
+    agent(app)
+      .get('/ssl')
+      .expect(301)
+      .expect('location', new RegExp('^https:[\\S]*$'), done);
+  });
+});
+
 describe('temporary', function() {
 
   it('should be temporary redirected', function (done) {
