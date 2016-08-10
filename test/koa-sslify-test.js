@@ -77,7 +77,7 @@ describe('Custom port', function () {
     agent(app)
       .get('/ssl')
       .expect(301)
-      .expect('location', new RegExp('^https://[\\S]*\:443/ssl$'), done);
+      .expect('location', new RegExp('^https://[\\S]*/ssl$'), done);
   });
 
   it('should redirect to specified port', function (done) {
@@ -123,20 +123,40 @@ describe('ignore url', function() {
     agent(app)
       .get('/ssl')
       .expect(301)
-      .expect('location', new RegExp('^https:[\\S]*:443$'), done);
+      .expect('location', new RegExp('^https:[\\S]*$'), done);
   });
 });
 
 describe('skip port', function() {
 
-  it('should skip port', function (done) {
+  it('should skip port by default', function (done) {
     var app = koa();
-    app.use(enforce({ skipPort: true }));
+    app.use(enforce({ skipDefaultPort: true }));
 
     agent(app)
       .get('/ssl')
       .expect(301)
-      .expect('location', new RegExp('^https:[\\S]*$'), done);
+      .expect('location', new RegExp('^https:[\\S]*/ssl$'), done);
+  });
+
+  it('should skip port', function (done) {
+    var app = koa();
+    app.use(enforce({ skipDefaultPort: true }));
+
+    agent(app)
+      .get('/ssl')
+      .expect(301)
+      .expect('location', new RegExp('^https:[\\S]*/ssl$'), done);
+  });
+
+  it('should not skip port', function (done) {
+    var app = koa();
+    app.use(enforce({ skipDefaultPort: false }));
+
+    agent(app)
+      .get('/ssl')
+      .expect(301)
+      .expect('location', new RegExp('^https:[\\S]*:443/ssl$'), done);
   });
 });
 
