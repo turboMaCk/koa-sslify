@@ -23,10 +23,10 @@ var defaults = {
  *   @api      private
  */
 function isInArray(item, array) {
-    for(var i = 0; i < array.length; i++) {
-      if(array[i] === item) { return true; }
-    }
-    return false;
+  for(var i = 0; i < array.length; i++) {
+    if(array[i] === item) { return true; }
+  }
+  return false;
 }
 
 /**
@@ -40,7 +40,7 @@ function applyOptions(options) {
   var settings = {};
   options = options || {};
   for (var option in defaults) {
-      settings[option] = (undefined !== options[option]) ? options[option] : defaults[option];
+    settings[option] = (undefined !== options[option]) ? options[option] : defaults[option];
   }
 
   return settings;

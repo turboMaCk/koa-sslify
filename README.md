@@ -1,5 +1,5 @@
 # Koa SSLify
-[![Build Status](https://travis-ci.org/turboMaCk/koa-sslify.svg)](https://travis-ci.org/turboMaCk/koa-sslify)
+[![Build Status](https://travis-ci.org/turboMaCk/koa-sslify.svg?branch=master)](https://travis-ci.org/turboMaCk/koa-sslify)
 [![Code Climate](https://codeclimate.com/github/turboMaCk/koa-sslify/badges/gpa.svg)](https://codeclimate.com/github/turboMaCk/koa-sslify)
 [![npm version](https://badge.fury.io/js/koa-sslify.svg)](https://badge.fury.io/js/koa-sslify)
 
@@ -8,6 +8,8 @@ In case of a non-encrypted HTTP request, koa-sslify automatically redirects to a
 
 koa-sslify also works behind reverse proxies (load balancers) as they are for example used by Heroku and nodejitsu.
 In such cases, however, the trustProxy parameter has to be set (see below).
+
+**For Koa 2 support please check [koa2](https://github.com/turboMaCk/koa-sslify/tree/koa2) branch.**
 
 ## Install
 ```
