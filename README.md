@@ -1,7 +1,10 @@
 # Koa SSLify
-[![Build Status](https://travis-ci.org/turboMaCk/koa-sslify.svg)](https://travis-ci.org/turboMaCk/koa-sslify)
+[![Build Status](https://travis-ci.org/turboMaCk/koa-sslify.svg?branch=koa2)](https://travis-ci.org/turboMaCk/koa-sslify)
 [![Code Climate](https://codeclimate.com/github/turboMaCk/koa-sslify/badges/gpa.svg)](https://codeclimate.com/github/turboMaCk/koa-sslify)
 [![npm version](https://badge.fury.io/js/koa-sslify.svg)](https://badge.fury.io/js/koa-sslify)
+
+**This is NEXT version of Koa SSLify compatible with Koa@2.0.0! This version is released under 2.0.0 tag.
+For stable please check [master](https://github.com/turboMaCk/koa-sslify/) branch.**
 
 This simple [Koa.js](http://koajs.com/) middleware enforces HTTPS connections on any incoming requests.
 In case of a non-encrypted HTTP request, koa-sslify automatically redirects to an HTTPS address using a 301 permanent redirect.
@@ -11,7 +14,7 @@ In such cases, however, the trustProxy parameter has to be set (see below).
 
 ## Install
 ```
-$ npm install koa-sslify
+$ npm install koa-sslify@2.0.0
 ```
 
 ## API
@@ -55,20 +58,20 @@ Please do *not* set this flag if you are not behind an Azure proxy as this flag 
 
 ### Without Reverse Proxy
 ```javascript
-var koa = require('koa');
+var Koa = require('koa');
 var http = require('http');
 var https = require('https');
 var fs = require('fs');
 var enforceHttps = require('koa-sslify');
 
-var app = koa();
+var app = new Koa();
 
 // Force HTTPS on all page
 app.use(enforceHttps());
 
 // index page
-app.use(function * (next) {
-  this.body = "hello world from " + this.request.url;
+app.use(ctx => {
+  ctx.body = "hello world from " + ctx.request.url;
 });
 
 // SSL options
@@ -84,10 +87,10 @@ https.createServer(options, app.callback()).listen(443);
 
 ### With Reverse Proxy
 ```javascript
-var koa = require('koa');
+var Koa = require('koa');
 var enforceHttps = require('koa-sslify');
 
-var app = koa();
+var app = new Koa();
 
 // Force HTTPS on all page
 app.use(enforceHttps({
@@ -95,8 +98,8 @@ app.use(enforceHttps({
 }));
 
 // index page
-app.use(function * (next) {
-  this.body = "hello world from " + this.request.url;
+app.use((ctx) => {
+  ctx = "hello world from " + ctx.request.url;
 });
 
 app.listen(3000);

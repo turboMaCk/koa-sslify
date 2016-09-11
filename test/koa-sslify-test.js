@@ -1,77 +1,73 @@
-var expect = require('chai').expect;
-var koa = require('koa');
+var Koa = require('koa');
 var agent = require('supertest-koa-agent');
 var enforce = require('../index.js');
 
-describe('HTTPS not enforced', function () {
+describe('HTTPS not enforced', () => {
 
-  var app = koa();
+  var app = new Koa();
 
-  app.use(function * (next) {
-    this.response.status = 200;
-    yield next;
+  app.use((ctx) => {
+    ctx.response.status = 200;
   });
 
   var subject =  agent(app);
 
-  it('should accept non-ssl requests', function (done) {
+  it('should accept non-ssl requests', done => {
     subject
       .get('/non-ssl')
       .expect(200, 'OK', done);
   });
 
-  it('should accept non-ssl HEAD requests', function (done) {
+  it('should accept non-ssl HEAD requests', done => {
     subject
       .head('/non-ssl')
       .expect(200, done);
   });
 
-  it('should accept non-ssl POST requests', function (done) {
+  it('should accept non-ssl POST requests', done => {
     subject
       .post('/non-ssl')
       .expect(200, 'OK', done);
   });
 });
 
-describe('HTTPS enforced', function() {
+describe('HTTPS enforced', () => {
 
-  var app = koa();
+  var app = new Koa();
 
   app.use(enforce());
 
-  app.use(function * (next) {
-    this.response.status = 200;
-
-    yield next;
+  app.use((ctx) => {
+    ctx.response.status = 200;
   });
 
   var subject = agent (app);
 
-  it('should redirect non-SSL GET requests to HTTPS', function (done) {
+  it('should redirect non-SSL GET requests to HTTPS', done => {
     subject
       .get('/ssl')
       .expect(301)
       .expect('location', new RegExp('^https://[\\S]*/ssl$'), done);
   });
 
-  it('should redirect non-SSL HEAD requests to HTTPS', function (done) {
+  it('should redirect non-SSL HEAD requests to HTTPS', done => {
     subject
       .head('/ssl')
       .expect(301)
       .expect('location', new RegExp('^https://[\\S]*/ssl$'), done);
   });
 
-  it('should send error for non-SSL POST requests', function (done) {
+  it('should send error for non-SSL POST requests', done => {
     subject
       .post('/non-ssl-post')
       .expect(403, done);
   });
 });
 
-describe('Custom port', function () {
+describe('Custom port', () => {
 
-  it('should redirect to 443 by default', function (done) {
-    var app = koa();
+  it('should redirect to 443 by default', done => {
+    var app = new Koa();
     app.use(enforce());
 
     agent(app)
@@ -80,8 +76,8 @@ describe('Custom port', function () {
       .expect('location', new RegExp('^https://[\\S]*/ssl$'), done);
   });
 
-  it('should redirect to specified port', function (done) {
-    var app = koa();
+  it('should redirect to specified port', done => {
+    var app = new Koa();
     app.use(enforce({ port: 3001 }));
 
     agent(app)
@@ -93,8 +89,8 @@ describe('Custom port', function () {
 
 describe('hostname', function() {
 
-  it('shold redirect to same host by default', function (done) {
-    var app = koa();
+  it('shold redirect to same host by default', done => {
+    var app = new Koa();
     app.use(enforce());
 
     agent(app)
@@ -103,8 +99,8 @@ describe('hostname', function() {
       .expect('location', new RegExp('^https://127.0.0.1[\\S]*/ssl$'), done);
   });
 
-  it('should redirect to specified host', function (done) {
-    var app = koa();
+  it('should redirect to specified host', done => {
+    var app = new Koa();
     app.use(enforce({ hostname: 'github.com' }));
 
     agent(app)
@@ -114,10 +110,10 @@ describe('hostname', function() {
   });
 });
 
-describe('ignore url', function() {
+describe('ignore url', () => {
 
-  it('should ignore url', function (done) {
-    var app = koa();
+  it('should ignore url', done => {
+    var app = new Koa();
     app.use(enforce({ ignoreUrl: true }));
 
     agent(app)
@@ -127,10 +123,10 @@ describe('ignore url', function() {
   });
 });
 
-describe('skip port', function() {
+describe('skip port', () => {
 
-  it('should skip port by default', function (done) {
-    var app = koa();
+  it('should skip port by default', done => {
+    var app = new Koa();
     app.use(enforce({ skipDefaultPort: true }));
 
     agent(app)
@@ -139,8 +135,8 @@ describe('skip port', function() {
       .expect('location', new RegExp('^https:[\\S]*/ssl$'), done);
   });
 
-  it('should skip port', function (done) {
-    var app = koa();
+  it('should skip port', done => {
+    var app = new Koa();
     app.use(enforce({ skipDefaultPort: true }));
 
     agent(app)
@@ -149,8 +145,8 @@ describe('skip port', function() {
       .expect('location', new RegExp('^https:[\\S]*/ssl$'), done);
   });
 
-  it('should not skip port', function (done) {
-    var app = koa();
+  it('should not skip port', done => {
+    var app = new Koa();
     app.use(enforce({ skipDefaultPort: false }));
 
     agent(app)
@@ -160,10 +156,10 @@ describe('skip port', function() {
   });
 });
 
-describe('temporary', function() {
+describe('temporary', () => {
 
-  it('should be temporary redirected', function (done) {
-    var app = koa();
+  it('should be temporary redirected', done => {
+    var app = new Koa();
     app.use(enforce({ temporary: true }));
 
     agent(app)
@@ -172,53 +168,52 @@ describe('temporary', function() {
   });
 });
 
-describe('custom redirect Methods', function () {
+describe('custom redirect Methods', () => {
 
-  var app = koa();
+  var app = new Koa();
   app.use(enforce({ redirectMethods: ['OPTIONS', 'GET'] }));
   var subject = agent(app);
 
-  if('should redirect GET', function (done) {
+  if('should redirect GET', done => {
     subject
       .get('/ssl')
       .expect(302, done);
   });
 
-  if('should redirect OPTIONS', function (done) {
+  if('should redirect OPTIONS', done => {
     subject
       .options('/ssl')
       .expect(302, done);
   });
 
-  if('should not redirect HEAD', function (done) {
+  if('should not redirect HEAD', done => {
     subject
       .head('/ssl')
       .expect(403, done);
   });
 });
 
-describe('should define internal redirect methods', function() {
+describe('should define internal redirect methods', () => {
 
-  var app = koa();
+  var app = new Koa();
   app.use(enforce({ internalRedirectMethods: ['POST', 'PUT'] }));
   var subject = agent(app);
 
-  it('should internal redirect POST', function (done) {
+  it('should internal redirect POST', done => {
     subject
-    .post('/ssl')
-    .expect(307, done);
+      .post('/ssl')
+      .expect(307, done);
   });
 
-  it('should internal redirect PUT', function (done) {
+  it('should internal redirect PUT', done => {
     subject
-    .put('/ssl')
-    .expect(307, done);
+      .put('/ssl')
+      .expect(307, done);
   });
 
-  it('should not internal redirect DELETE', function (done) {
+  it('should not internal redirect DELETE', done => {
     subject
-    .delete('/ssl')
-    .expect(403, done);
+      .delete('/ssl')
+      .expect(403, done);
   });
 });
-
