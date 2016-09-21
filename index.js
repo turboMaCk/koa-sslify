@@ -12,22 +12,9 @@ const defaults = {
   ignoreUrl: false,
   temporary: false,
   redirectMethods: ['GET', 'HEAD'],
-  internalRedirectMethods: []
+  internalRedirectMethods: [],
+  specCompliantDisallow: false
 };
-
-/**
- * Is item in array
- *   @param    {String/array/number/object}   item
- *   @param    {Array}                        array
- *   @return   {Boolean}
- *   @api      private
- */
-function isInArray(item, array) {
-    for(var i = 0; i < array.length; i++) {
-      if(array[i] === item) { return true; }
-    }
-    return false;
-}
 
 /**
  * Apply options
@@ -51,16 +38,6 @@ function portToUrlString(options) {
 }
 
 /**
- * Check if method is allowed in settings
- *   @param    {String}    method
- *   @param    {Hash}      options
- *   @return   {Boolean}
- */
-function isAllowed(method, settings) {
-  return isInArray(method, settings.redirectMethods) || isInArray(method, settings.internalRedirectMethods);
-}
-
-/**
  * enforceHTTPS
  *
  *   @param    {Hash}       options
@@ -72,12 +49,22 @@ function isAllowed(method, settings) {
  *   @param    {Boolean}    options[temporary]
  *   @param    {Array}      options[redirectMethods]
  *   @param    {Array}      options[internalRedirectMethods]
+ *   @param    {Boolean}    options[specCompliantDisallow]
  *   @return   {Function}
  *   @api      public
  */
 
 module.exports = function enforceHTTPS(options) {
   options = applyOptions(options);
+
+  const redirectStatus = {};
+  options.redirectMethods.forEach(function (x) {
+    redirectStatus[x] = options.temporary ? 302 : 301;
+  });
+  options.internalRedirectMethods.forEach(function (x) {
+    redirectStatus[x] = 307;
+  });
+  redirectStatus.OPTIONS = 0;
 
   return (ctx, next) => {
 
@@ -100,9 +87,15 @@ module.exports = function enforceHTTPS(options) {
       return next();
     }
 
-    // Check if method should be Forbidden
-    if (!isAllowed(ctx.method, options)) {
-      ctx.response.status = 403;
+    // Check if method should be disallowed (and handle OPTIONS method)
+    if (!redirectStatus[ctx.method]) {
+      if (ctx.method === 'OPTIONS') {
+        ctx.response.status = 200;
+      } else {
+        ctx.response.status = options.specCompliantDisallow ? 405 : 403;
+      }
+      ctx.response.set('Allow', Object.keys(redirectStatus).join());
+      ctx.response.body = '';
       return;
     }
 
@@ -114,14 +107,8 @@ module.exports = function enforceHTTPS(options) {
       redirectTo += ctx.request.url;
     }
 
-    // Check if should internal or permanently redirect
-    if (isInArray(ctx.method, options.internalRedirectMethods)) {
-      ctx.response.status = 307;
-    } else if (!options.temporary) {
-      ctx.response.status = 301;
-    }
-
     // redirect to secure
+    ctx.response.status = redirectStatus[ctx.method];
     ctx.response.redirect(redirectTo);
   };
 };
