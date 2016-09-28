@@ -14,7 +14,7 @@ In such cases, however, the `trustProxy` parameter has to be set (see below).
 
 ## Install
 ```
-$ npm install koa-sslify@2.0.1
+$ npm install koa-sslify@2.1.0
 ```
 
 ## API
