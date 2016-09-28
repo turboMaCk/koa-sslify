@@ -26,9 +26,7 @@ const defaults = {
 function applyOptions(options) {
   const settings = {};
   options = options || {};
-  for (var option in defaults) {
-      settings[option] = (undefined !== options[option]) ? options[option] : defaults[option];
-  }
+  Object.assign(settings, defaults, options);
 
   return settings;
 }
