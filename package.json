@@ -1,17 +1,20 @@
 {
   "name": "koa-sslify",
-  "version": "1.1.0",
+  "version": "2.1.0",
   "description": "Enforces HTTPS for node.js koa projects",
   "main": "index.js",
   "repository": "https://github.com/turboMaCk/koa-sslify.git",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --recursive --harmony"
+    "test": "./node_modules/.bin/mocha --recursive"
+  },
+  "publishConfig": {
+    "tag": "next"
   },
   "devDependencies": {
     "chai": "^3.3.0",
-    "koa": "^0.6.0",
+    "koa": "^2.0.0",
     "mocha": "^2.3.3",
-    "supertest-koa-agent": "^0.2.1"
+    "supertest-koa-agent": "^0.3.0"
   },
   "keywords": [
     "koa",
@@ -27,6 +30,6 @@
   "author": "Marek Fajkus <marek.faj@gmail.com>",
   "license": "MIT",
   "engines": {
-    "node": ">0.12.7"
+    "node": ">6.0.0"
   }
 }
