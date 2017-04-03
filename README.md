@@ -1,10 +1,7 @@
 # Koa SSLify
-[![Build Status](https://travis-ci.org/turboMaCk/koa-sslify.svg?branch=koa2)](https://travis-ci.org/turboMaCk/koa-sslify)
+[![Build Status](https://travis-ci.org/turboMaCk/koa-sslify.svg?branch=master)](https://travis-ci.org/turboMaCk/koa-sslify)
 [![Code Climate](https://codeclimate.com/github/turboMaCk/koa-sslify/badges/gpa.svg)](https://codeclimate.com/github/turboMaCk/koa-sslify)
 [![npm version](https://badge.fury.io/js/koa-sslify.svg)](https://badge.fury.io/js/koa-sslify)
-
-**This is the NEXT version of Koa SSLify compatible with Koa@2.0.0! This version is released under the koa2 branch.
-For stable please check [master](https://github.com/turboMaCk/koa-sslify/) branch.**
 
 This simple [Koa.js](http://koajs.com/) middleware enforces HTTPS connections on any incoming requests.
 In case of a non-encrypted HTTP request, koa-sslify automatically redirects to an HTTPS address using a `301 permanent redirect`.
