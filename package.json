@@ -1,14 +1,11 @@
 {
   "name": "koa-sslify",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Enforces HTTPS for node.js koa projects",
   "main": "index.js",
   "repository": "https://github.com/turboMaCk/koa-sslify.git",
   "scripts": {
     "test": "./node_modules/.bin/mocha --recursive"
-  },
-  "publishConfig": {
-    "tag": "next"
   },
   "devDependencies": {
     "chai": "^3.3.0",
