@@ -41,6 +41,7 @@ function portToUrlString(options) {
  *   @param    {Hash}       options
  *   @param    {Boolean}    options[trustProtoHeader]
  *   @param    {Boolean}    options[trustAzureHeader]
+ *   @param    {String}     options[customProtoHeader]
  *   @param    {Integer}    options[port]
  *   @param    {String}     options[hostname]
  *   @param    {Boolean}    options[ignoreUrl]
@@ -79,6 +80,12 @@ module.exports = function enforceHTTPS(options) {
     // indicating a SSL connection
     if (!secure && options.trustAzureHeader && ctx.request.header["x-arr-ssl"]) {
       secure = true;
+    }
+
+    // Forth, if a custom request headers can be trusted (e.g. because they are send
+    // by a proxy), check if sp,e custom header (instead of x-forwarded-proto) is set to https
+    if (!secure && options.customProtoHeader) {
+      secure = ctx.request.header[options.customProtoHeader] === 'https';
     }
 
     if (secure) {
