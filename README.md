@@ -157,5 +157,3 @@ MIT
 ## Credits
 This project is heavily inspired by [Florian Heinemann's](https://github.com/florianheinemann) [express-sslify](https://github.com/florianheinemann/express-sslify)
 and [Vitaly Domnikov's](https://github.com/dotcypress) [koa-force-ssl](https://github.com/dotcypress/koa-force-ssl).
-
-With [love, internet style](https://www.youtube.com/watch?v=Xe1TZaElTAs).
