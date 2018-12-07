@@ -24,6 +24,7 @@ $ npm install koa-sslify
 ### Available Options
 *   `trustProtoHeader [Boolean]` - trust `x-forwarded-proto` header from Heroku or nodejitsu (default is `false`)
 *   `trustAzureHeader [Boolean]` - trust Azure's `x-arr-ssl` header (default is `false`)
+*   `customProtoHeader [String]` - allows to provide a custom proto header name for reverse-proxies instead of the standard one: `x-forwarded-proto` (default is `undefined`)
 *   `port [Integer]` - HTTPS port (default is `443`)
 *   `hostname [String]` - host name for redirect (default is to redirect to same host)
 *   `ignoreUrl [Boolean]` - ignore request url, redirect all requests to root (default is `false`)
@@ -56,6 +57,14 @@ app.use(enforceHttps({
 ```
 
 Please do *not* set this flag if you are not behind an Azure proxy as this flag can easily be spoofed outside of an Azure environment.
+
+## Custom reverse-proxy header Support
+
+```javascript
+app.use(enforceHttps({
+  customProtoHeader: 'x-forwarded-proto-custom'
+}))
+```
 
 ## Usage
 
