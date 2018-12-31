@@ -1,13 +1,14 @@
-var Koa = require('koa');
-var agent = require('supertest-koa-agent');
-var enforce = require('../index.js');
+const Koa = require('koa');
+const agent = require('supertest-koa-agent');
+const sslify = require('../index.js')
+const enforce = sslify.default;
 
-var customProtoHeader = 'x-forwarded-proto-custom';
+const customProtoHeader = 'x-forwarded-proto-custom';
 
 describe('Custom proxy SSL flag', () => {
 
   describe('Flag is not set', () => {
-    var app = new Koa();
+    const app = new Koa();
 
     app.use(enforce());
 
@@ -15,7 +16,7 @@ describe('Custom proxy SSL flag', () => {
       ctx.response.status = 200;
     });
 
-    var subject = agent(app);
+    const subject = agent(app);
 
     it(`should ignore ${customProtoHeader} if not activated`, done => {
       subject
@@ -28,9 +29,9 @@ describe('Custom proxy SSL flag', () => {
   });
 
   describe('Flag is set', () => {
-    var app = new Koa();
+    const app = new Koa();
 
-    app.use(enforce({ customProtoHeader }));
+    app.use(enforce({ resolver: sslify.customProtoHeaderResolver(customProtoHeader) }));
 
     app.use((ctx) => {
       ctx.response.status = 200;
