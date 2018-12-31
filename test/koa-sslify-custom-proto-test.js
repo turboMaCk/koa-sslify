@@ -1,6 +1,6 @@
 var Koa = require('koa');
 var agent = require('supertest-koa-agent');
-var enforce = require('../index.js');
+var enforce = require('../index.js').default;
 
 var customProtoHeader = 'x-forwarded-proto-custom';
 

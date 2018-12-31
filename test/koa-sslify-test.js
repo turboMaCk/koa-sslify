@@ -1,7 +1,7 @@
 var expect = require('chai').expect;
 var Koa = require('koa');
 var agent = require('supertest-koa-agent');
-var enforce = require('../index.js');
+var enforce = require('../index.js').default;
 
 var app = null;
 var subject = null;

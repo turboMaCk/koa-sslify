@@ -39,9 +39,6 @@ function portToUrlString(options) {
  * enforceHTTPS
  *
  *   @param    {Hash}       options
- *   @param    {Boolean}    options[trustProtoHeader]
- *   @param    {Boolean}    options[trustAzureHeader]
- *   @param    {String}     options[customProtoHeader]
  *   @param    {Integer}    options[port]
  *   @param    {String}     options[hostname]
  *   @param    {Boolean}    options[ignoreUrl]
@@ -53,7 +50,7 @@ function portToUrlString(options) {
  *   @api      public
  */
 
-module.exports = function enforceHTTPS(options) {
+function middleware(options) {
   options = applyOptions(options);
 
   const redirectStatus = {};
@@ -116,4 +113,8 @@ module.exports = function enforceHTTPS(options) {
     ctx.response.status = redirectStatus[ctx.method];
     ctx.response.redirect(redirectTo);
   };
+};
+
+module.exports = {
+  default: middleware
 };
