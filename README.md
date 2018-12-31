@@ -56,12 +56,12 @@ Default function accepts several options.
 Resolver is a function from classic Koa `ctx` object to boolean.
 This function is used to determine if request is or is not secured (true means is secure).
 Middlware calls this function and based on its returned value either passes
-controll to next middleware or responds to the request with appropriete redirect response.
+control to next middleware or responds to the request with appropriate redirect response.
 
 There are several resolvers provided by this library but it should be very easy to implement
 any type of custom check as well.
 
-for instance Heroku has reverse proxy that uses `x-forwarded-proto` header.
+for instance, Heroku has a reverse proxy that uses `x-forwarded-proto` header.
 This is how you can configure app with this resolver:
 
 ```js
@@ -82,12 +82,12 @@ Those are all resolver provided by default:
 | Name                        | Used by                                                                                                                 | Example                                                 |
 |-----------------------------|-------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------|
 | `httpsResolver`             | Node.js server running with tls support                                                                                 | `sslify()`                                              |
-| `xForwardedProtoResolver`   | Heroku, Google Ingress, Nodejitsu                                                                                       | `sslify({ resulver: xForwardedProtoResolver })`         |
+| `xForwardedProtoResolver`   | Heroku, Google Ingress, Nodejitsu                                                                                       | `sslify({ resolver: xForwardedProtoResolver })`         |
 | `azureResolver`             | Azure                                                                                                                   | `sslify({ resolver: azureResolver })`                   |
 | `customProtoHeaderResolver` | any non-standard implementation (Kong)                                                                                  | `sslify({ resolver: customProtoHeader('x-protocol') })` |
 | `forwardedResolver`         | [standard header](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) | `sslify({ resolver: forwardedResolver })`               |
 
-Some additianal ifromation about reverse proxies:
+Some additional information about reverse proxies:
 
 #### Reverse Proxies (Heroku, Nodejitsu, GCE Ingress and others)
 
@@ -99,11 +99,11 @@ most reverse proxies set the `x-forwarded-proto` header flag with the original r
 #### Azure
 
 Azure has a slightly different way of signaling encrypted connections.
-It uses `x-arr-ssl` header as a flag to mark https trafic.
+It uses `x-arr-ssl` header as a flag to mark https traffic.
 
 ### Defining Custom Resolver
 
-If you're still in situation where you need to use custom resolver you can implement it as for example following:
+If you're still in a situation where you need to use custom resolver you can implement it as for example following:
 
 ```javascript
 const { default: sslify } = require('koa-sslify');
@@ -158,8 +158,8 @@ https.createServer(options, app.callback()).listen(8081);
 
 ### With Reverse Proxy
 
-This exmple starts single http server which is designed to run behind
-reverse proxy like Heroku.
+This example starts a single http server which is designed to run behind
+a reverse proxy like Heroku.
 
 ```javascript
 const Koa = require('koa');
@@ -192,8 +192,8 @@ You can change whitelisted methods by passing `redirectMethods` array to options
 
 ### Internal Redirect Support \[POST/PUT\]
 
-**By default there is no HTTP(S) methods whitelisted for `307 internal redirect`.**
-You can define custom whitelist of methods for `307` by passing `internalRedirectMethods` array to options.
+**By default there are no HTTP(S) methods whitelisted for `307 internal redirect`.**
+You can define a custom whitelist of methods for `307` by passing `internalRedirectMethods` array to options.
 This should be useful if you want to support `POST` and `PUT` delegation from `HTTP` to `HTTPS`.
 For more info see [this](http://www.checkupdown.com/status/E307.html) article.
 
