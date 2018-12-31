@@ -173,9 +173,9 @@ function forwardedResolver(ctx) {
 */
 module.exports = {
   default: factory,
-  httpsResolver: httpsResolver,
-  xForwardedProtoResolver: xForwardedProtoResolver,
-  azureResolver: azureResolver,
-  customProtoHeader: customProtoHeader,
-  forwardedResolver: forwardedResolver
+  httpsResolver,
+  xForwardedProtoResolver,
+  azureResolver,
+  customProtoHeader,
+  forwardedResolver
 };
