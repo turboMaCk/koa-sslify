@@ -66,15 +66,14 @@ This is how you can configure app with this resolver:
 
 ```js
 const {
-  // middlware factory
-  default: sslify,
-  // resolver needed
-  resolver: xForwardedProtoResolver
+  default: sslify, // middlware factory
+  resolver: xForwardedProtoResolver // resolver needed
 } = require('koa-sslify');
 const Koa = require('koa');
 
 app = new Koa();
-// init middlware with resolver
+
+// init middleware with resolver
 app.use(sslify(resolver));
 ```
 
@@ -205,11 +204,14 @@ Since `443` is default port for `HTTPS` browser will use it by default anyway so
 is no need to explicitly return it as part of URL. Anyway in case you need to **always return port as part of URL string**
 you can pass options with `skipDefaultPort: false` to do the trick.
 
-*Thanks to [@MathRobin](https://github.com/MathRobin) for implementation of this as well as port skipping itself. Thanks to [@sethb0](https://github.com/sethb0) for specCompliantDisallow feature and implementation.*
+*Thanks to [@MathRobin](https://github.com/MathRobin) for implementation of this as well as port skipping itself.
+Thanks to [@sethb0](https://github.com/sethb0) for specCompliantDisallow feature and implementation.*
 
 ## License
+
 MIT
 
 ## Credits
+
 This project is heavily inspired by [Florian Heinemann's](https://github.com/florianheinemann) [express-sslify](https://github.com/florianheinemann/express-sslify)
 and [Vitaly Domnikov's](https://github.com/dotcypress) [koa-force-ssl](https://github.com/dotcypress/koa-force-ssl).
