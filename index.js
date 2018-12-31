@@ -61,7 +61,7 @@ function portToUrlString(options) {
  *   @param    {Boolean}    options[temporary]
  *   @param    {Array}      options[redirectMethods]
  *   @param    {Array}      options[internalRedirectMethods]
- *   @param    {Integer}    options[siallowStatus]
+ *   @param    {Integer}    options[disallowStatus]
  *   @return   {Function}
  *   @api      public
  */
