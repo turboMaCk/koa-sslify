@@ -1,38 +1,56 @@
-# Koa SSLify
-[![Build Status](https://travis-ci.org/turboMaCk/koa-sslify.svg?branch=master)](https://travis-ci.org/turboMaCk/koa-sslify)
-[![Code Climate](https://codeclimate.com/github/turboMaCk/koa-sslify/badges/gpa.svg)](https://codeclimate.com/github/turboMaCk/koa-sslify)
-[![npm version](https://badge.fury.io/js/koa-sslify.svg)](https://badge.fury.io/js/koa-sslify)
+<div align="center">
+    <h1>Koa SSLify</h1>
+    <p>Enforce HTTPS middleware for Koa.js</p>
+    <!-- Badges -->
+    <a href="https://travis-ci.org/turboMaCk/koa-sslify">
+        <img src="https://travis-ci.org/turboMaCk/koa-sslify.svg?branch=master" alt="build">
+    </a>
+    <a href="https://codeclimate.com/github/turboMaCk/koa-sslify">
+      <img src="https://codeclimate.com/github/turboMaCk/koa-sslify/badges/gpa.svg" alt="code climate">
+    </a>
+    <a href="https://badge.fury.io/js/koa-sslify">
+      <img src="https://badge.fury.io/js/koa-sslify.svg" alt="version">
+    </a>
+</div>
 
-This simple [Koa.js](http://koajs.com/) middleware enforces HTTPS connections on any incoming requests.
-In case of a non-encrypted HTTP request, koa-sslify automatically redirects to an HTTPS address using a `301 permanent redirect`.
+[Koa.js](http://koajs.com/) middleware to enforce HTTPS connection on any incoming requests.
+In case of a non-encrypted HTTP request, koa-sslify automatically redirects to an HTTPS address using a `301 permanent redirect`
+(or optionally `302 Temporary Redirect`).
 
-koa-sslify also works behind reverse proxies (load balancers) as they are for example used by Heroku and nodejitsu.
-In such cases, however, the `trustProxy` parameter has to be set (see below).
+Koa SSLify can also work behind reverse proxies (load balancers) like on Heroku, Azure, GCP Ingress etc
+and supports custom implementations of proxy resolvers.
 
 ## Install
+
 ```
-$ npm install koa-sslify
+$ npm install --save koa-sslify
 ```
 
-## API
+## Usage
 
-### `enforceHttps(options);`
-**params:** {Hash} options
+Importing default factory function:
 
-**return:** {Function}
+```
+const sslify = require('koa-sslify').default;
+```
 
-### Available Options
-*   `trustProtoHeader [Boolean]` - trust `x-forwarded-proto` header from Heroku or nodejitsu (default is `false`)
-*   `trustAzureHeader [Boolean]` - trust Azure's `x-arr-ssl` header (default is `false`)
-*   `customProtoHeader [String]` - allows to provide a custom proto header name for reverse-proxies instead of the standard one: `x-forwarded-proto` (default is `undefined`)
-*   `port [Integer]` - HTTPS port (default is `443`)
-*   `hostname [String]` - host name for redirect (default is to redirect to same host)
-*   `ignoreUrl [Boolean]` - ignore request url, redirect all requests to root (default is `false`)
-*   `temporary [Boolean]` - use `302 Temporary Redirect` (default is to use `301 Permanent Redirect`)
-*   `skipDefaultPort [Boolean]` - Skip port in redirect URL if it's `443` (default is `true`)
-*   `redirectMethods [Array]` - Whitelist methods that should be redirected (default is `['GET', 'HEAD']`)
-*   `internalRedirectMethods [Array]` - Whitelist methods for `307 Internal Redirect` (default is `[]`)
-*   `specCompliantDisallow [Boolean]` - use status of `405` for disallowed methods (default is to use `403`)
+This will import main function that takes several options:
+
+| name                      | type                          | default           | description                                          |
+| ------------------------- | ----------------------------- | ----------------- | ---------------------------------------------------- |
+| `resolver`                | <function> (ctx : Ctx) : Bool | `httpsResolver`   | Function used to test if request is secure           |
+| `hostname`                | String                        | `undefined`       | Hostname for redirect (uses request host if not set) |
+| `port`                    | Integer                       | `443`             | Port of HTTPS server                                 |
+| `ignoreUrl`               | Boolean                       | `false`           | Ignore url path (redirect to domain))                |
+| `temporary`               | Boolean                       | `false`           | Temporary mode (use 302 Temporary Redirect)          |
+| `skipDefaultPort`         | Boolean                       | `true`            | Avoid `:403` port in redirect url                    |
+| `redirectMethods`         | Array<String>                 | `['GET', 'HEAD']` | Whitelist methods that should be redirected          |
+| `internalRedirectMethods` | Array<String>                 | `[]`              | Whitelist methods for `307 Internal Redirect`        |
+| `disallowStatus`          | Integer                       | `405`             | Status returned for dissalowed methods               |
+
+### Resolvers
+
+TBA
 
 ## Reverse Proxies (Heroku, Nodejitsu, GCE Ingress and others)
 

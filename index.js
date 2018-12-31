@@ -18,15 +18,15 @@ const url = require('url');
  * Default configuration
  */
 const defaults = {
-  port: 443,
-  hostname: null,
   resolver: httpsResolver,
+  hostname: undefined,
+  port: 443,
   skipDefaultPort: true,
   ignoreUrl: false,
   temporary: false,
   redirectMethods: ['GET', 'HEAD'],
   internalRedirectMethods: [],
-  disallowStatus: 405
+  disallowedStatus: 405
 };
 
 
@@ -59,7 +59,7 @@ function middleware(redirectStatus, options) {
       if (ctx.method === 'OPTIONS') {
         ctx.response.status = 200;
       } else {
-        ctx.response.status = options.disallowStatus;
+        ctx.response.status = options.disallowedStatus;
       }
       ctx.response.set('Allow', Object.keys(redirectStatus).join());
       ctx.response.body = '';
