@@ -31,7 +31,7 @@ describe('Custom proxy SSL flag', () => {
   describe('Flag is set', () => {
     const app = new Koa();
 
-    app.use(enforce({ resolver: sslify.customProtoHeader(customProtoHeader) }));
+    app.use(enforce({ resolver: sslify.customProtoHeaderResolver(customProtoHeader) }));
 
     app.use((ctx) => {
       ctx.response.status = 200;
