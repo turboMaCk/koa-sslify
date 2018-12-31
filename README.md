@@ -1,6 +1,6 @@
 <div align="center">
     <h1>Koa SSLify</h1>
-    <p>Enforce HTTPS middleware for Koa.js</p>
+
     <!-- Badges -->
     <a href="https://travis-ci.org/turboMaCk/koa-sslify">
         <img src="https://travis-ci.org/turboMaCk/koa-sslify.svg?branch=master" alt="build">
@@ -11,6 +11,9 @@
     <a href="https://badge.fury.io/js/koa-sslify">
       <img src="https://badge.fury.io/js/koa-sslify.svg" alt="version">
     </a>
+    <!-- /Badges -->
+
+    <p>Enforce HTTPS middleware for Koa.js</p>
 </div>
 
 [Koa.js](http://koajs.com/) middleware to enforce HTTPS connection on any incoming requests.
