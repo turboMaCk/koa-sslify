@@ -29,7 +29,7 @@ $ npm install --save koa-sslify
 
 Importing default factory function:
 
-```js
+```javascript
 const sslify = require('koa-sslify').default; // factory with default options
 const Koa = require('koa');
 
@@ -105,7 +105,7 @@ It uses `x-arr-ssl` header as a flag to mark https trafic.
 
 If you're still in situation where you need to use custom resolver you can implement it as for example following:
 
-```
+```javascript
 const { default: sslify } = require('koa-sslify');
 
 app.use(sslify({
