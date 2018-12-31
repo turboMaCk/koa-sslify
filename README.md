@@ -66,7 +66,7 @@ This is how you can configure app with this resolver:
 
 ```js
 const {
-  default: sslify, // middlware factory
+  default: sslify, // middleware factory
   resolver: xForwardedProtoResolver // resolver needed
 } = require('koa-sslify');
 const Koa = require('koa');
@@ -74,7 +74,7 @@ const Koa = require('koa');
 app = new Koa();
 
 // init middleware with resolver
-app.use(sslify(resolver));
+app.use(sslify({ resolver }));
 ```
 
 Those are all resolver provided by default:
