@@ -1,8 +1,9 @@
-var Koa = require('koa');
-var agent = require('supertest-koa-agent');
-var enforce = require('../index.js').default;
+const Koa = require('koa');
+const agent = require('supertest-koa-agent');
+const sslify = require('../index.js')
+const enforce = sslify.default;
 
-var customProtoHeader = 'x-forwarded-proto-custom';
+const customProtoHeader = 'x-forwarded-proto-custom';
 
 describe('Custom proxy SSL flag', () => {
 
@@ -30,7 +31,7 @@ describe('Custom proxy SSL flag', () => {
   describe('Flag is set', () => {
     var app = new Koa();
 
-    app.use(enforce({ customProtoHeader }));
+    app.use(enforce({ resolver: sslify.customProtoHeader(customProtoHeader) }));
 
     app.use((ctx) => {
       ctx.response.status = 200;

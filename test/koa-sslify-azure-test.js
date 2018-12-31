@@ -1,11 +1,12 @@
-var Koa = require('koa');
-var agent = require('supertest-koa-agent');
-var enforce = require('../index.js').default;
+const Koa = require('koa');
+const agent = require('supertest-koa-agent');
+const sslify = require('../index.js');
+const enforce = sslify.default;
 
 describe('Azure-style proxy SSL flag', () => {
 
   describe('flag is not set', () => {
-    var app = new Koa();
+    const app = new Koa();
 
     app.use(enforce());
 
@@ -13,7 +14,7 @@ describe('Azure-style proxy SSL flag', () => {
       ctx.response.status = 200;
     });
 
-    var subject = agent(app);
+    const subject = agent(app);
 
     it('should ignore x-arr-ssl if not activated', (done) => {
       subject
@@ -25,15 +26,15 @@ describe('Azure-style proxy SSL flag', () => {
   });
 
   describe('flag is set', () => {
-    var app = new Koa();
+    const app = new Koa();
 
-    app.use(enforce({ trustAzureHeader: true }));
+    app.use(enforce({ resolver: sslify.azureResolver }));
 
     app.use((ctx) => {
       ctx.response.status = 200;
     });
 
-    var subject = agent(app);
+    const subject = agent(app);
 
     it('should accept request if flag set and activated', (done) => {
       subject

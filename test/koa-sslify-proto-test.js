@@ -1,11 +1,12 @@
-var Koa = require('koa');
-var agent = require('supertest-koa-agent');
-var enforce = require('../index.js').default;
+const Koa = require('koa');
+const agent = require('supertest-koa-agent');
+const sslify = require('../index.js');
+const enforce = sslify.default;
 
 describe('Heroku-style proxy SSL flag', () => {
 
   describe('Flag is not set', () => {
-    var app = new Koa();
+    const app = new Koa();
 
     app.use(enforce());
 
@@ -13,7 +14,7 @@ describe('Heroku-style proxy SSL flag', () => {
       ctx.response.status = 200;
     });
 
-    var subject = agent(app);
+    const subject = agent(app);
 
     it('should ignore x-forwarded-proto if not activated', done => {
       subject
@@ -26,15 +27,15 @@ describe('Heroku-style proxy SSL flag', () => {
   });
 
   describe('Flag is set', () => {
-    var app = new Koa();
+    const app = new Koa();
 
-    app.use(enforce({ trustProtoHeader: true }));
+    app.use(enforce({ resolver: sslify.xForwardedProtoResolver }));
 
     app.use((ctx) => {
       ctx.response.status = 200;
     });
 
-    var subject = agent(app);
+    const subject = agent(app);
 
     it('should accept request if flag set and activated', done => {
       subject
