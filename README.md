@@ -10,7 +10,6 @@
       <img src="https://badge.fury.io/js/koa-sslify.svg" alt="version">
     </a>
     <p>Enforce HTTPS middleware for Koa.js</p>
-    <img src="http://www.vpdm.ca/wp-content/uploads/2017/03/https_3.png" width="200">
 </div>
 
 [Koa.js](http://koajs.com/) middleware to enforce HTTPS connection on any incoming requests.
@@ -38,16 +37,14 @@ app = new Koa();
 app.use(sslify());
 ```
 
-Default function accepts several [options](#options).
-
-### Options
+Default function accepts several options.
 
 | Name                      | Type          | Default           | Description                                          |
 | ------------------------- | ------------- | ----------------- | ---------------------------------------------------- |
 | `resolver`                | Function      | `httpsResolver`   | Function used to test if request is secure           |
 | `hostname`                | String        | `undefined`       | Hostname for redirect (uses request host if not set) |
 | `port`                    | Integer       | `443`             | Port of HTTPS server                                 |
-| `ignoreUrl`               | Boolean       | `false`           | Ignore url path (redirect to domain))                |
+| `ignoreUrl`               | Boolean       | `false`           | Ignore url path (redirect to domain)                 |
 | `temporary`               | Boolean       | `false`           | Temporary mode (use 302 Temporary Redirect)          |
 | `skipDefaultPort`         | Boolean       | `true`            | Avoid `:403` port in redirect url                    |
 | `redirectMethods`         | Array<String> | `['GET', 'HEAD']` | Whitelist methods that should be redirected          |
