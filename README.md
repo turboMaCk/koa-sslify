@@ -31,22 +31,28 @@ $ npm install --save koa-sslify
 Importing default factory function:
 
 ```js
-const sslify = require('koa-sslify').default;
+const sslify = require('koa-sslify').default; // factory with default options
+const Koa = require('koa');
+
+app = new Koa();
+app.use(sslify());
 ```
 
-This will import main function that takes several options:
+Default function accepts several [options](#options).
 
-| Name                      | Type                          | Default           | Description                                          |
-| ------------------------- | ----------------------------- | ----------------- | ---------------------------------------------------- |
-| `resolver`                | function (ctx : Ctx) : Bool   | `httpsResolver`   | Function used to test if request is secure           |
-| `hostname`                | String                        | `undefined`       | Hostname for redirect (uses request host if not set) |
-| `port`                    | Integer                       | `443`             | Port of HTTPS server                                 |
-| `ignoreUrl`               | Boolean                       | `false`           | Ignore url path (redirect to domain))                |
-| `temporary`               | Boolean                       | `false`           | Temporary mode (use 302 Temporary Redirect)          |
-| `skipDefaultPort`         | Boolean                       | `true`            | Avoid `:403` port in redirect url                    |
-| `redirectMethods`         | Array<String>                 | `['GET', 'HEAD']` | Whitelist methods that should be redirected          |
-| `internalRedirectMethods` | Array<String>                 | `[]`              | Whitelist methods for `307 Internal Redirect`        |
-| `disallowStatus`          | Integer                       | `405`             | Status returned for dissalowed methods               |
+### Options
+
+| Name                      | Type          | Default           | Description                                          |
+| ------------------------- | ------------- | ----------------- | ---------------------------------------------------- |
+| `resolver`                | Function      | `httpsResolver`   | Function used to test if request is secure           |
+| `hostname`                | String        | `undefined`       | Hostname for redirect (uses request host if not set) |
+| `port`                    | Integer       | `443`             | Port of HTTPS server                                 |
+| `ignoreUrl`               | Boolean       | `false`           | Ignore url path (redirect to domain))                |
+| `temporary`               | Boolean       | `false`           | Temporary mode (use 302 Temporary Redirect)          |
+| `skipDefaultPort`         | Boolean       | `true`            | Avoid `:403` port in redirect url                    |
+| `redirectMethods`         | Array<String> | `['GET', 'HEAD']` | Whitelist methods that should be redirected          |
+| `internalRedirectMethods` | Array<String> | `[]`              | Whitelist methods for `307 Internal Redirect`        |
+| `disallowStatus`          | Integer       | `405`             | Status returned for dissalowed methods               |
 
 ### Resolvers
 
@@ -138,36 +144,26 @@ app.listen(3000);
 ## Advanced Redirect Setting
 
 ### Redirect Methods
+
 By default only `GET` and `HEAD` methods are whitelisted for redirect.
 koa-sslify will respond with `403` (`405` if `specCompliantDisallow` option is set) on all other methods.
 You can change whitelisted methods by passing `redirectMethods` array to options.
 
 ### Internal Redirect Support \[POST/PUT\]
+
 **By default there is no HTTP(S) methods whitelisted for `307 internal redirect`.**
 You can define custom whitelist of methods for `307` by passing `internalRedirectMethods` array to options.
 This should be useful if you want to support `POST` and `PUT` delegation from `HTTP` to `HTTPS`.
 For more info see [this](http://www.checkupdown.com/status/E307.html) article.
 
 ### Skip Default Port in Redirect URL
+
 **By default this plugin exclude port from redirect url if it's set to `443`.**
 Since `443` is default port for `HTTPS` browser will use it by default anyway so there
 is no need to explicitly return it as part of URL. Anyway in case you need to **always return port as part of URL string**
 you can pass options with `skipDefaultPort: false` to do the trick.
 
 *Thanks to [@MathRobin](https://github.com/MathRobin) for implementation of this as well as port skipping itself. Thanks to [@sethb0](https://github.com/sethb0) for specCompliantDisallow feature and implementation.*
-
-## Build locally
-```
-git clone git@github.com:sethb0/koa-sslify.git
-cd koa-sslify
-git checkout koa2
-npm install
-```
-
-### Run tests
-```
-npm test
-```
 
 ## License
 MIT
