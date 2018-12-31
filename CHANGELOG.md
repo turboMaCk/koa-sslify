@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.0.0
+- module exports hash and not function (function can be found in `default` key)
+- replace flags with resolvers
+- default disallow method status is `405`
+- flag `specCompliantDisallow` removed (default behaviour)
+  - for compatibility with old behaviour set `disallowStatus` to `403`
+- support for `Forwarded` header (via resolver) #25
+  - see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Forwarded
+
 ## 2.2.0
 - Support for `customProtoHeader`
 

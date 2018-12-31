@@ -102,6 +102,20 @@ most reverse proxies set the `x-forwarded-proto` header flag with the original r
 Azure has a slightly different way of signaling encrypted connections.
 It uses `x-arr-ssl` header as a flag to mark https trafic.
 
+### Defining Custom Resolver
+
+If you're still in situation where you need to use custom resolver you can implement it as for example following:
+
+```
+const { default: sslify } = require('koa-sslify');
+
+app.use(sslify({
+  resolver: (ctx) => ctx.request.header['x-is-secure'] === 'yup!'
+}))
+```
+
+Contributions to increase coverage of default resolvers are welcomed.
+
 ## Examples
 
 Those are full example apps using Koa SSLify to enforce HTTPS.
