@@ -30,13 +30,7 @@ const defaults = {
 };
 
 
-/**
- * Apply options
- *
- *   @param    {Hash}    options
- *   @return   {Hash}
- *   @api      private
- */
+// Merge default options with overwrites and returns new object
 function applyOptions(options) {
   const settings = {};
   options = options || {};
@@ -45,13 +39,17 @@ function applyOptions(options) {
   return settings;
 }
 
+// skip 443 ports in urls
 function portToUrlString(options) {
   return (options.skipDefaultPort && options.port === 443) ? '' : ':' + options.port;
 }
 
 
+// middleware itself
 function middleware(redirectStatus, options) {
   return (ctx, next) => {
+
+    // Apply resolver
     if (options.resolver(ctx)) {
       return next();
     }
@@ -144,6 +142,7 @@ function customProtoHeader(header) {
   }
 }
 
+// parse Forwarded header
 function parseForwarded(value) {
   const forwarded = {}
 
