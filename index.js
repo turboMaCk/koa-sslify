@@ -1,20 +1,34 @@
+/*
+  This module exposes factory function to construct middleware
+  This factory function accepts options has to configure behaviour
+  of middleware.
+
+  The most important part is `resolver` which is a function
+    `boolean resolver(ctx : Ctx)` -- Java
+    `resolver :: Ctx -> Bool`     -- Haskell
+
+  This function is being called with ctx object of request
+    - If `true` is returned connection is considered secure
+    - If `false` is returned connection is considered not being secured
+*/
+
 var url = require('url');
 
 /**
  * Default configuration
  */
 const defaults = {
-  trustProtoHeader: false,
-  trustAzureHeader: false,
   port: 443,
   hostname: null,
+  resolver: httpsResolver,
   skipDefaultPort: true,
   ignoreUrl: false,
   temporary: false,
   redirectMethods: ['GET', 'HEAD'],
   internalRedirectMethods: [],
-  specCompliantDisallow: false
+  disallowStatus: 405
 };
+
 
 /**
  * Apply options
@@ -35,24 +49,26 @@ function portToUrlString(options) {
   return (options.skipDefaultPort && options.port === 443) ? '' : ':' + options.port;
 }
 
+
 /**
  * enforceHTTPS
  *
  *   @param    {Hash}       options
+ *   @param    {Function}   options[resolver]
  *   @param    {Integer}    options[port]
  *   @param    {String}     options[hostname]
  *   @param    {Boolean}    options[ignoreUrl]
  *   @param    {Boolean}    options[temporary]
  *   @param    {Array}      options[redirectMethods]
  *   @param    {Array}      options[internalRedirectMethods]
- *   @param    {Boolean}    options[specCompliantDisallow]
+ *   @param    {Integer}    options[siallowStatus]
  *   @return   {Function}
  *   @api      public
  */
-
 function middleware(options) {
   options = applyOptions(options);
 
+  // @TODO: try to refactor
   const redirectStatus = {};
   options.redirectMethods.forEach(function (x) {
     redirectStatus[x] = options.temporary ? 302 : 301;
@@ -63,29 +79,7 @@ function middleware(options) {
   redirectStatus.OPTIONS = 0;
 
   return (ctx, next) => {
-
-    // First, check if directly requested via https
-    var secure = ctx.secure;
-
-    // Second, if the request headers can be trusted (e.g. because they are send
-    // by a proxy), check if x-forward-proto is set to https
-    if (!secure && options.trustProtoHeader) {
-      secure = ctx.request.header['x-forwarded-proto'] === 'https';
-    }
-
-    // Third, if trustAzureHeader is set, check for Azure's headers
-    // indicating a SSL connection
-    if (!secure && options.trustAzureHeader && ctx.request.header["x-arr-ssl"]) {
-      secure = true;
-    }
-
-    // Forth, if a custom request headers can be trusted (e.g. because they are send
-    // by a proxy), check if sp,e custom header (instead of x-forwarded-proto) is set to https
-    if (!secure && options.customProtoHeader) {
-      secure = ctx.request.header[options.customProtoHeader] === 'https';
-    }
-
-    if (secure) {
+    if (options.resolver(ctx)) {
       return next();
     }
 
@@ -94,7 +88,7 @@ function middleware(options) {
       if (ctx.method === 'OPTIONS') {
         ctx.response.status = 200;
       } else {
-        ctx.response.status = options.specCompliantDisallow ? 405 : 403;
+        ctx.response.status = options.disallowStatus;
       }
       ctx.response.set('Allow', Object.keys(redirectStatus).join());
       ctx.response.body = '';
@@ -115,6 +109,43 @@ function middleware(options) {
   };
 };
 
+/*
+  Resolvers
+*/
+
+// Default HTTPS resolver
+// This works when using node.js TLS support
+function httpsResolver(ctx) {
+  return ctx.secure;
+}
+
+// x-forwarded-proto header resolver
+// common for heroku gcp (ingress) etc
+function xForwardedProtoResolver(ctx) {
+  return ctx.request.header['x-forwarded-proto'] === 'https';
+}
+
+
+// Azure resolver
+// Azure is using `x-att-ssl` header
+function azureResolver(ctx) {
+  return Boolean(ctx.request.header["x-arr-ssl"]);
+}
+
+// Custom proto header factory
+function customProtoHeader(header) {
+  return (ctx) => {
+    return ctx.request.header[header] === 'https';
+  }
+}
+
+/*
+  Exports
+*/
 module.exports = {
-  default: middleware
+  default: middleware,
+  httpsResolver: httpsResolver,
+  xForwardedProtoResolver: xForwardedProtoResolver,
+  azureResolver: azureResolver,
+  customProtoHeader: customProtoHeader
 };

@@ -61,7 +61,7 @@ describe('HTTPS enforced', function() {
 
     subject
       .post('/non-ssl-post')
-      .expect(403, done);
+      .expect(405, done);
   });
 });
 
@@ -206,7 +206,7 @@ describe('custom redirect Methods', function () {
 
     subject
       .head('/ssl')
-      .expect(403, done);
+      .expect(405, done);
   });
 });
 
@@ -259,7 +259,7 @@ describe('should define internal redirect methods', function() {
 
     subject
     .delete('/ssl')
-    .expect(403, done);
+    .expect(405, done);
   });
 });
 
