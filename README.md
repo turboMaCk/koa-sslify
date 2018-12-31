@@ -12,6 +12,8 @@
     <p>Enforce HTTPS middleware for Koa.js</p>
 </div>
 
+![][http://www.vpdm.ca/wp-content/uploads/2017/03/https_3.png]
+
 [Koa.js](http://koajs.com/) middleware to enforce HTTPS connection on any incoming requests.
 In case of a non-encrypted HTTP request, koa-sslify automatically redirects to an HTTPS address using a `301 permanent redirect`
 (or optionally `302 Temporary Redirect`).
