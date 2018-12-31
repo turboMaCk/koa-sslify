@@ -39,7 +39,7 @@ This will import main function that takes several options:
 
 | name                      | type                          | default           | description                                          |
 | ------------------------- | ----------------------------- | ----------------- | ---------------------------------------------------- |
-| `resolver`                | <function> (ctx : Ctx) : Bool | `httpsResolver`   | Function used to test if request is secure           |
+| `resolver`                | function (ctx : Ctx) : Bool   | `httpsResolver`   | Function used to test if request is secure           |
 | `hostname`                | String                        | `undefined`       | Hostname for redirect (uses request host if not set) |
 | `port`                    | Integer                       | `443`             | Port of HTTPS server                                 |
 | `ignoreUrl`               | Boolean                       | `false`           | Ignore url path (redirect to domain))                |
