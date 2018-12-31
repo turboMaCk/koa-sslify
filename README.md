@@ -10,9 +10,8 @@
       <img src="https://badge.fury.io/js/koa-sslify.svg" alt="version">
     </a>
     <p>Enforce HTTPS middleware for Koa.js</p>
+    <img src="http://www.vpdm.ca/wp-content/uploads/2017/03/https_3.png" width="200">
 </div>
-
-![](http://www.vpdm.ca/wp-content/uploads/2017/03/https_3.png)
 
 [Koa.js](http://koajs.com/) middleware to enforce HTTPS connection on any incoming requests.
 In case of a non-encrypted HTTP request, koa-sslify automatically redirects to an HTTPS address using a `301 permanent redirect`
@@ -31,13 +30,13 @@ $ npm install --save koa-sslify
 
 Importing default factory function:
 
-```
+```js
 const sslify = require('koa-sslify').default;
 ```
 
 This will import main function that takes several options:
 
-| name                      | type                          | default           | description                                          |
+| Name                      | Type                          | Default           | Description                                          |
 | ------------------------- | ----------------------------- | ----------------- | ---------------------------------------------------- |
 | `resolver`                | function (ctx : Ctx) : Bool   | `httpsResolver`   | Function used to test if request is secure           |
 | `hostname`                | String                        | `undefined`       | Hostname for redirect (uses request host if not set) |
