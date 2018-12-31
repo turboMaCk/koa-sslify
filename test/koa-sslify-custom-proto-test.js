@@ -8,7 +8,7 @@ const customProtoHeader = 'x-forwarded-proto-custom';
 describe('Custom proxy SSL flag', () => {
 
   describe('Flag is not set', () => {
-    var app = new Koa();
+    const app = new Koa();
 
     app.use(enforce());
 
@@ -16,7 +16,7 @@ describe('Custom proxy SSL flag', () => {
       ctx.response.status = 200;
     });
 
-    var subject = agent(app);
+    const subject = agent(app);
 
     it(`should ignore ${customProtoHeader} if not activated`, done => {
       subject
@@ -29,7 +29,7 @@ describe('Custom proxy SSL flag', () => {
   });
 
   describe('Flag is set', () => {
-    var app = new Koa();
+    const app = new Koa();
 
     app.use(enforce({ resolver: sslify.customProtoHeader(customProtoHeader) }));
 

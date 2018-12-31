@@ -12,7 +12,7 @@
     - If `false` is returned connection is considered not being secured
 */
 
-var url = require('url');
+const url = require('url');
 
 /**
  * Default configuration
@@ -50,34 +50,7 @@ function portToUrlString(options) {
 }
 
 
-/**
- * enforceHTTPS
- *
- *   @param    {Hash}       options
- *   @param    {Function}   options[resolver]
- *   @param    {Integer}    options[port]
- *   @param    {String}     options[hostname]
- *   @param    {Boolean}    options[ignoreUrl]
- *   @param    {Boolean}    options[temporary]
- *   @param    {Array}      options[redirectMethods]
- *   @param    {Array}      options[internalRedirectMethods]
- *   @param    {Integer}    options[disallowStatus]
- *   @return   {Function}
- *   @api      public
- */
-function middleware(options) {
-  options = applyOptions(options);
-
-  // @TODO: try to refactor
-  const redirectStatus = {};
-  options.redirectMethods.forEach(function (x) {
-    redirectStatus[x] = options.temporary ? 302 : 301;
-  });
-  options.internalRedirectMethods.forEach(function (x) {
-    redirectStatus[x] = 307;
-  });
-  redirectStatus.OPTIONS = 0;
-
+function middleware(redirectStatus, options) {
   return (ctx, next) => {
     if (options.resolver(ctx)) {
       return next();
@@ -97,7 +70,7 @@ function middleware(options) {
 
     // build redirect url
     const httpsHost = options.hostname || url.parse('http://' + ctx.request.header.host).hostname;
-    var redirectTo = 'https://' + httpsHost + portToUrlString(options);
+    let redirectTo = 'https://' + httpsHost + portToUrlString(options);
 
     if(!options.ignoreUrl) {
       redirectTo += ctx.request.url;
@@ -107,6 +80,38 @@ function middleware(options) {
     ctx.response.status = redirectStatus[ctx.method];
     ctx.response.redirect(redirectTo);
   };
+}
+
+
+/**
+ * enforceHTTPS
+ *
+ *   @param    {Hash}       options
+ *   @param    {Function}   options[resolver]
+ *   @param    {Integer}    options[port]
+ *   @param    {String}     options[hostname]
+ *   @param    {Boolean}    options[ignoreUrl]
+ *   @param    {Boolean}    options[temporary]
+ *   @param    {Array}      options[redirectMethods]
+ *   @param    {Array}      options[internalRedirectMethods]
+ *   @param    {Integer}    options[disallowStatus]
+ *   @return   {Function}
+ *   @api      public
+ */
+function factory(options) {
+  options = applyOptions(options);
+
+  // @TODO: try to refactor
+  const redirectStatus = {};
+  options.redirectMethods.forEach(function (x) {
+    redirectStatus[x] = options.temporary ? 302 : 301;
+  });
+  options.internalRedirectMethods.forEach(function (x) {
+    redirectStatus[x] = 307;
+  });
+  redirectStatus.OPTIONS = 0;
+
+  return middleware(redirectStatus, options);
 };
 
 /*
@@ -139,13 +144,38 @@ function customProtoHeader(header) {
   }
 }
 
+function parseForwarded(value) {
+  const forwarded = {}
+
+  value.trim().split(';').forEach((part) => {
+    const pair = part.trim().split('=');
+    forwarded[pair[0]] = pair[1];
+  });
+
+  return forwarded;
+}
+
+// Resolver for `Forwarded` header
+// see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Forwarded
+function forwardedResolver(ctx) {
+  const header = ctx.request.header['forwarded'];
+
+  if (!header) {
+    return false;
+  } else {
+    const forwarded = parseForwarded(header);
+    return forwarded.proto === 'https';
+  }
+}
+
 /*
   Exports
 */
 module.exports = {
-  default: middleware,
+  default: factory,
   httpsResolver: httpsResolver,
   xForwardedProtoResolver: xForwardedProtoResolver,
   azureResolver: azureResolver,
-  customProtoHeader: customProtoHeader
+  customProtoHeader: customProtoHeader,
+  forwardedResolver: forwardedResolver
 };
