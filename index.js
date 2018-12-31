@@ -136,7 +136,7 @@ function azureResolver(ctx) {
 }
 
 // Custom proto header factory
-function customProtoHeader(header) {
+function customProtoHeaderResolver(header) {
   return (ctx) => {
     return ctx.request.header[header] === 'https';
   }
@@ -175,6 +175,6 @@ module.exports = {
   httpsResolver,
   xForwardedProtoResolver,
   azureResolver,
-  customProtoHeader,
+  customProtoHeaderResolver,
   forwardedResolver
 };

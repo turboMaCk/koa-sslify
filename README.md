@@ -40,7 +40,7 @@ app.use(sslify());
 Default function accepts several options.
 
 | Name                      | Type          | Default           | Description                                          |
-| ------------------------- | ------------- | ----------------- | ---------------------------------------------------- |
+|---------------------------|---------------|-------------------|------------------------------------------------------|
 | `resolver`                | Function      | `httpsResolver`   | Function used to test if request is secure           |
 | `hostname`                | String        | `undefined`       | Hostname for redirect (uses request host if not set) |
 | `port`                    | Integer       | `443`             | Port of HTTPS server                                 |
@@ -53,54 +53,79 @@ Default function accepts several options.
 
 ### Resolvers
 
-TBA
+Resolver is a function from classic Koa `ctx` object to boolean.
+This function is used to determine if request is or is not secured (true means is secure).
+Middlware calls this function and based on its returned value either passes
+controll to next middleware or responds to the request with appropriete redirect response.
 
-## Reverse Proxies (Heroku, Nodejitsu, GCE Ingress and others)
+There are several resolvers provided by this library but it should be very easy to implement
+any type of custom check as well.
 
-Heroku, nodejitsu, GCE Ingress and other hosters often use reverse proxies which offer SSL endpoints but then forward unencrypted HTTP traffic to the website. This makes it difficult to detect if the original request was indeed via HTTPS. Luckily, most reverse proxies set the `x-forwarded-proto` header flag with the original request scheme. koa-sslify is ready for such scenarios, but you have to specifically request the evaluation of this flag:
+for instance Heroku has reverse proxy that uses `x-forwarded-proto` header.
+This is how you can configure app with this resolver:
 
-```javascript
-app.use(enforceHttps({
-  trustProtoHeader: true
-}))
+```js
+const {
+  // middlware factory
+  default: sslify,
+  // resolver needed
+  resolver: xForwardedProtoResolver
+} = require('koa-sslify');
+const Koa = require('koa');
+
+app = new Koa();
+// init middlware with resolver
+app.use(sslify(resolver));
 ```
 
-Please do *not* set this flag if you are not behind a proxy that is setting this header as such flags can be easily spoofed in a direct client/server connection.
+Those are all resolver provided by default:
 
-## Azure Support
+| Name                        | Used by                                                                                                                 | Example                                   |
+|-----------------------------|-------------------------------------------------------------------------------------------------------------------------|-------------------------------------------|
+| `httpsResolver`             | Node.js server running with tls support                                                                                 | `sslify()`                                |
+| `xForwardedProtoResolver    | Heroku, Google Ingress, Nodejitsu                                                                                       | `sslify(xForwardedProtoResolver)`         |
+| `azureResolver`             | Azure                                                                                                                   | `sslify(azureResolver)`                   |
+| `customProtoHeaderResolver` | any non-standard implementation (Kong)                                                                                  | `sslify(customProtoHeader('x-protocol'))` |
+| `forwardedResolver`         | [standard header](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) | `sslify(forwardedResolver)                |
 
-Azure has a slightly different way of signaling encrypted connections. To tell koa-sslify to look out for Azure's x-arr-ssl header do the following:
+Some additianal ifromation about reverse proxies:
 
-```javascript
-app.use(enforceHttps({
-  trustAzureHeader: true
-}))
-```
+#### Reverse Proxies (Heroku, Nodejitsu, GCE Ingress and others)
 
-Please do *not* set this flag if you are not behind an Azure proxy as this flag can easily be spoofed outside of an Azure environment.
+Heroku, nodejitsu, GCE Ingress and other hosters often use reverse proxies which offer SSL endpoints
+but then forward unencrypted HTTP traffic to the website.
+This makes it difficult to detect if the original request was indeed via HTTPS. Luckily,
+most reverse proxies set the `x-forwarded-proto` header flag with the original request scheme.
 
-## Custom reverse-proxy header Support
+#### Azure
 
-```javascript
-app.use(enforceHttps({
-  customProtoHeader: 'x-forwarded-proto-custom'
-}))
-```
+Azure has a slightly different way of signaling encrypted connections.
+It uses `x-arr-ssl` header as a flag to mark https trafic.
 
-## Usage
+## Examples
+
+Those are full example apps using Koa SSLify to enforce HTTPS.
 
 ### Without Reverse Proxy
+
+This example starts 2 servers for app.
+
+- First HTTP server is listening on port 8080 and redirects to second one
+- Second HTTPS server is listening on port 8081
+
 ```javascript
-var Koa = require('koa');
-var http = require('http');
-var https = require('https');
-var fs = require('fs');
-var enforceHttps = require('koa-sslify');
+const Koa = require('koa');
+const http = require('http');
+const https = require('https');
+const fs = require('fs');
+const { default: enforceHttps } = require('koa-sslify');
 
-var app = new Koa();
+const app = new Koa();
 
-// Force HTTPS on all page
-app.use(enforceHttps());
+// Force HTTPS using default resolver
+app.use(enforceHttps({
+  port: 8081
+}));
 
 // index page
 app.use(ctx => {
@@ -114,27 +139,33 @@ var options = {
 }
 
 // start the server
-http.createServer(app.callback()).listen(80);
-https.createServer(options, app.callback()).listen(443);
+http.createServer(app.callback()).listen(8080);
+https.createServer(options, app.callback()).listen(8081);
 ```
 
 ### With Reverse Proxy
+
+This exmple starts single http server which is designed to run behind
+reverse proxy like Heroku.
+
 ```javascript
-var Koa = require('koa');
-var enforceHttps = require('koa-sslify');
+const Koa = require('koa');
+const {
+  default: enforceHttps,
+  xForwardedProtoResolver: resolver
+} = require('koa-sslify');
 
 var app = new Koa();
 
-// Force HTTPS on all page
-app.use(enforceHttps({
-  trustProtoHeader: true
-}));
+// Force HTTPS via x-forwarded-proto compatible resolver
+app.use(enforceHttps({ resolver }));
 
 // index page
 app.use((ctx) => {
   ctx = "hello world from " + ctx.request.url;
 });
 
+// proxy will bind this port to it's 443 and 80 ports
 app.listen(3000);
 ```
 
