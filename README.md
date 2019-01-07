@@ -46,9 +46,8 @@ Default function accepts several options.
 | `port`                    | Integer       | `443`             | Port of HTTPS server                                 |
 | `ignoreUrl`               | Boolean       | `false`           | Ignore url path (redirect to domain)                 |
 | `temporary`               | Boolean       | `false`           | Temporary mode (use 302 Temporary Redirect)          |
-| `skipDefaultPort`         | Boolean       | `true`            | Avoid `:403` port in redirect url                    |
+| `skipDefaultPort`         | Boolean       | `true`            | Avoid `:443` port in redirect url                    |
 | `redirectMethods`         | Array<String> | `['GET', 'HEAD']` | Whitelist methods that should be redirected          |
-| `internalRedirectMethods` | Array<String> | `[]`              | Whitelist methods for `307 Internal Redirect`        |
 | `disallowStatus`          | Integer       | `405`             | Status returned for dissalowed methods               |
 
 ### Resolvers
@@ -189,13 +188,6 @@ app.listen(3000);
 By default only `GET` and `HEAD` methods are whitelisted for redirect.
 koa-sslify will respond with `403` (`405` if `specCompliantDisallow` option is set) on all other methods.
 You can change whitelisted methods by passing `redirectMethods` array to options.
-
-### Internal Redirect Support \[POST/PUT\]
-
-**By default there are no HTTP(S) methods whitelisted for `307 internal redirect`.**
-You can define a custom whitelist of methods for `307` by passing `internalRedirectMethods` array to options.
-This should be useful if you want to support `POST` and `PUT` delegation from `HTTP` to `HTTPS`.
-For more info see [this](http://www.checkupdown.com/status/E307.html) article.
 
 ### Skip Default Port in Redirect URL
 

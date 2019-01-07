@@ -85,35 +85,7 @@ describe('Custom port', function () {
   });
 });
 
-describe('HTTPS enforced with specCompliantDisallow', function () {
-  it('should redirect non-SSL GET requests to HTTPS', function (done) {
-    app.use(enforce({ specCompliantDisallow: true }));
-
-    subject
-      .get('/ssl')
-      .expect(301)
-      .expect('location', new RegExp('^https://[\\S]*/ssl$'), done);
-  });
-
-  it('should redirect non-SSL HEAD requests to HTTPS', function (done) {
-    app.use(enforce({ specCompliantDisallow: true }));
-
-    subject
-      .head('/ssl')
-      .expect(301)
-      .expect('location', new RegExp('^https://[\\S]*/ssl$'), done);
-  });
-
-  it('should send error for non-SSL POST requests', function (done) {
-    app.use(enforce({ specCompliantDisallow: true }));
-
-    subject
-      .post('/non-ssl-post')
-      .expect(405, done);
-  });
-});
-
-describe('hostname', function() {
+describe('Hostname', function() {
   it('shold redirect to same host by default', function (done) {
     app.use(enforce());
 
@@ -133,7 +105,7 @@ describe('hostname', function() {
   });
 });
 
-describe('ignore url', function() {
+describe('Ignore url', function() {
   it('should ignore url', function (done) {
     app.use(enforce({ ignoreUrl: true }));
 
@@ -144,7 +116,7 @@ describe('ignore url', function() {
   });
 });
 
-describe('skip port', function() {
+describe('Skip port', function() {
   it('should skip port by default', function (done) {
     app.use(enforce());
 
@@ -173,7 +145,7 @@ describe('skip port', function() {
   });
 });
 
-describe('temporary', function() {
+describe('Temporary', function() {
   it('should be temporary redirected', function (done) {
     app.use(enforce({ temporary: true }));
 
@@ -183,21 +155,12 @@ describe('temporary', function() {
   });
 });
 
-describe('custom redirect Methods', function () {
+describe('Custom redirect Methods', function () {
   it('should redirect GET', function (done) {
     app.use(enforce({ redirectMethods: ['OPTIONS', 'GET'] }));
 
     subject
       .get('/ssl')
-      .expect(301, done);
-  });
-
-  // skipped until discussion complete
-  it.skip('should redirect OPTIONS', function (done) {
-    app.use(enforce({ redirectMethods: ['OPTIONS', 'GET'] }));
-
-    subject
-      .options('/ssl')
       .expect(301, done);
   });
 
@@ -210,82 +173,25 @@ describe('custom redirect Methods', function () {
   });
 });
 
-describe('custom redirect Methods with specCompliantDisallow', function () {
-  it('should redirect GET', function (done) {
-    app.use(enforce({ redirectMethods: ['OPTIONS', 'GET'], specCompliantDisallow: true }));
+describe('Disallow status', function () {
+  it('should return 405 by defaul', function (done) {
+    app.use(enforce());
 
     subject
-      .get('/ssl')
-      .expect(301, done);
-  });
-
-  // skipped until discussion complete
-  it.skip('should redirect OPTIONS', function (done) {
-    app.use(enforce({ redirectMethods: ['OPTIONS', 'GET'], specCompliantDisallow: true }));
-
-    subject
-      .options('/ssl')
-      .expect(301, done);
-  });
-
-  it('should not redirect HEAD', function (done) {
-    app.use(enforce({ redirectMethods: ['OPTIONS', 'GET'], specCompliantDisallow: true }));
-
-    subject
-      .head('/ssl')
+      .post('/ssl')
+      .expect('Allow', 'GET, HEAD')
       .expect(405, done);
   });
-});
 
-describe('should define internal redirect methods', function() {
-  it('should internal redirect POST', function (done) {
-    app.use(enforce({ internalRedirectMethods: ['POST', 'PUT'] }));
+  it('should by possible to set custom status', function (done) {
+    app.use(enforce({ disallowStatus: 403 }));
 
     subject
-    .post('/ssl')
-    .expect(307, done);
-  });
-
-  it('should internal redirect PUT', function (done) {
-    app.use(enforce({ internalRedirectMethods: ['POST', 'PUT'] }));
-
-    subject
-    .put('/ssl')
-    .expect(307, done);
-  });
-
-  it('should not internal redirect DELETE', function (done) {
-    app.use(enforce({ internalRedirectMethods: ['POST', 'PUT'] }));
-
-    subject
-    .delete('/ssl')
-    .expect(405, done);
-  });
-});
-
-
-describe('should define internal redirect methods with specCompliantDisallow', function() {
-  it('should internal redirect POST', function (done) {
-    app.use(enforce({ internalRedirectMethods: ['POST', 'PUT'], specCompliantDisallow: true }));
-
-    subject
-    .post('/ssl')
-    .expect(307, done);
-  });
-
-  it('should internal redirect PUT', function (done) {
-    app.use(enforce({ internalRedirectMethods: ['POST', 'PUT'], specCompliantDisallow: true }));
-
-    subject
-    .put('/ssl')
-    .expect(307, done);
-  });
-
-  it('should not internal redirect DELETE', function (done) {
-    app.use(enforce({ internalRedirectMethods: ['POST', 'PUT'], specCompliantDisallow: true }));
-
-    subject
-    .delete('/ssl')
-    .expect(405, done);
+      .post('/ssl')
+      // allow header is not defined
+      .expect(function (res) {
+        res.body.allow = res.header.allow;
+      })
+      .expect(403, { allow: undefined }, done);
   });
 });
