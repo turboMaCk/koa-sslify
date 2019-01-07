@@ -46,11 +46,6 @@ function portToUrlString(options) {
 
 // middleware itself
 function redirect(options, ctx) {
-  // Apply resolver
-  if (options.resolver(ctx)) {
-    return next();
-  }
-
   // Check if method should be disallowed (and handle OPTIONS method)
   if (options.redirectMethods.indexOf(ctx.method) === -1) {
     ctx.response.status = options.disallowStatus;
