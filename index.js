@@ -25,8 +25,7 @@ const defaults = {
   ignoreUrl: false,
   temporary: false,
   redirectMethods: ['GET', 'HEAD'],
-  internalRedirectMethods: [],
-  disallowedStatus: 405
+  disallowStatus: 405
 };
 
 
@@ -46,38 +45,33 @@ function portToUrlString(options) {
 
 
 // middleware itself
-function middleware(redirectStatus, options) {
-  return (ctx, next) => {
+function redirect(options, ctx) {
+  // Apply resolver
+  if (options.resolver(ctx)) {
+    return next();
+  }
 
-    // Apply resolver
-    if (options.resolver(ctx)) {
-      return next();
+  // Check if method should be disallowed (and handle OPTIONS method)
+  if (options.redirectMethods.indexOf(ctx.method) === -1) {
+    ctx.response.status = options.disallowStatus;
+    if (options.disallowStatus === 405) {
+      ctx.response.set('Allow', options.redirectMethods.join(', '));
     }
+    ctx.response.body = '';
+    return;
+  }
 
-    // Check if method should be disallowed (and handle OPTIONS method)
-    if (!redirectStatus[ctx.method]) {
-      if (ctx.method === 'OPTIONS') {
-        ctx.response.status = 200;
-      } else {
-        ctx.response.status = options.disallowedStatus;
-      }
-      ctx.response.set('Allow', Object.keys(redirectStatus).join());
-      ctx.response.body = '';
-      return;
-    }
+  // build redirect url
+  const httpsHost = options.hostname || url.parse('http://' + ctx.request.header.host).hostname;
+  let redirectTo = `https://${httpsHost}${portToUrlString(options)}`;
 
-    // build redirect url
-    const httpsHost = options.hostname || url.parse('http://' + ctx.request.header.host).hostname;
-    let redirectTo = 'https://' + httpsHost + portToUrlString(options);
+  if(!options.ignoreUrl) {
+    redirectTo += ctx.request.url;
+  }
 
-    if(!options.ignoreUrl) {
-      redirectTo += ctx.request.url;
-    }
-
-    // redirect to secure
-    ctx.response.status = redirectStatus[ctx.method];
-    ctx.response.redirect(redirectTo);
-  };
+  // redirect to secure
+  ctx.response.status = options.temporary ? 302 : 301;
+  ctx.response.redirect(redirectTo);
 }
 
 
@@ -91,25 +85,20 @@ function middleware(redirectStatus, options) {
  *   @param    {Boolean}    options[ignoreUrl]
  *   @param    {Boolean}    options[temporary]
  *   @param    {Array}      options[redirectMethods]
- *   @param    {Array}      options[internalRedirectMethods]
  *   @param    {Integer}    options[disallowStatus]
  *   @return   {Function}
  *   @api      public
  */
 function factory(options) {
   options = applyOptions(options);
-
-  // @TODO: try to refactor
-  const redirectStatus = {};
-  options.redirectMethods.forEach(function (x) {
-    redirectStatus[x] = options.temporary ? 302 : 301;
-  });
-  options.internalRedirectMethods.forEach(function (x) {
-    redirectStatus[x] = 307;
-  });
-  redirectStatus.OPTIONS = 0;
-
-  return middleware(redirectStatus, options);
+  return (ctx, next) => {
+    if (options.resolver(ctx)) {
+      return next();
+    } else {
+      redirect(options, ctx);
+    }
+  }
+  // return middleware(options);
 };
 
 /*
