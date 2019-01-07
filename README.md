@@ -186,18 +186,16 @@ app.listen(3000);
 ### Redirect Methods
 
 By default only `GET` and `HEAD` methods are whitelisted for redirect.
-koa-sslify will respond with `403` (`405` if `specCompliantDisallow` option is set) on all other methods.
-You can change whitelisted methods by passing `redirectMethods` array to options.
+koa-sslify will respond with `405` with appropriete `Allow` header by default.
+You can change whitelisted methods by passing `redirectMethods` array to options
+as well as change status for disallowed methods using `disallowStatus`.
 
 ### Skip Default Port in Redirect URL
 
-**By default this plugin exclude port from redirect url if it's set to `443`.**
+**By default port is excluded from redirect url if it's set to `443`.**
 Since `443` is default port for `HTTPS` browser will use it by default anyway so there
 is no need to explicitly return it as part of URL. Anyway in case you need to **always return port as part of URL string**
 you can pass options with `skipDefaultPort: false` to do the trick.
-
-*Thanks to [@MathRobin](https://github.com/MathRobin) for implementation of this as well as port skipping itself.
-Thanks to [@sethb0](https://github.com/sethb0) for specCompliantDisallow feature and implementation.*
 
 ## License
 
