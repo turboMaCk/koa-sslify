@@ -91,14 +91,18 @@ function redirect(options, ctx) {
  */
 function factory(options) {
   options = applyOptions(options);
+
   return (ctx, next) => {
+
+    // Next if secure
     if (options.resolver(ctx)) {
-      return next();
-    } else {
+      next();
+    }
+    // Redirect to HTTPS
+    else {
       redirect(options, ctx);
     }
   }
-  // return middleware(options);
 };
 
 /*

@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.0.0
+- Fixes in documentation
+- Remove odd behaviour cumulated over time
+  - remove special handling of OPTIONS requests
+  - remove internal redirect support
+  - Allow header only for 405 status
+- rename option `disallowedStatus -> disallowStatus`
+
 ## 3.0.0
 - module exports hash and not function (function can be found in `default` key)
 - replace flags with resolvers
