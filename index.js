@@ -46,7 +46,7 @@ function portToUrlString(options) {
 
 // middleware itself
 function redirect(options, ctx) {
-  // Check if method should be disallowed (and handle OPTIONS method)
+  // Check if method should be disallowed
   if (options.redirectMethods.indexOf(ctx.method) === -1) {
     ctx.response.status = options.disallowStatus;
     if (options.disallowStatus === 405) {
@@ -159,6 +159,7 @@ function forwardedResolver(ctx) {
   Exports
 */
 module.exports = {
+  __esModule: true,
   default: factory,
   httpsResolver,
   xForwardedProtoResolver,
