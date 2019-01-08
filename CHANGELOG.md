@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.0.1
+- `__esModule` flag to enable support of ES style import via esm.js
+
 ## 4.0.0
 - Fixes in documentation
 - Remove odd behaviour cumulated over time
