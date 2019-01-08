@@ -91,7 +91,7 @@ function factory(options) {
 
     // Next if secure
     if (options.resolver(ctx)) {
-      next();
+      return next();
     }
     // Redirect to HTTPS
     else {
