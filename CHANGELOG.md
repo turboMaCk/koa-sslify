@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.0.2
+- **hotfix** return next middleware
+
 ## 4.0.1
 - `__esModule` flag to enable support of ES style import via esm.js
 
