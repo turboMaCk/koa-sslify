@@ -38,6 +38,7 @@ function applyOptions(options) {
   return settings;
 }
 
+
 // skip 443 ports in urls
 function portToUrlString(options) {
   return (options.skipDefaultPort && options.port === 443) ? '' : ':' + options.port;
@@ -100,6 +101,7 @@ function factory(options) {
   }
 };
 
+
 /*
   Resolvers
 */
@@ -109,6 +111,7 @@ function factory(options) {
 function httpsResolver(ctx) {
   return ctx.secure;
 }
+
 
 // x-forwarded-proto header resolver
 // common for heroku gcp (ingress) etc
@@ -123,12 +126,14 @@ function azureResolver(ctx) {
   return Boolean(ctx.request.header["x-arr-ssl"]);
 }
 
+
 // Custom proto header factory
 function customProtoHeaderResolver(header) {
   return (ctx) => {
     return ctx.request.header[header] === 'https';
   }
 }
+
 
 // parse Forwarded header
 function parseForwarded(value) {
@@ -142,6 +147,7 @@ function parseForwarded(value) {
   return forwarded;
 }
 
+
 // Resolver for `Forwarded` header
 // see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Forwarded
 function forwardedResolver(ctx) {
@@ -154,6 +160,7 @@ function forwardedResolver(ctx) {
     return forwarded.proto === 'https';
   }
 }
+
 
 /*
   Exports

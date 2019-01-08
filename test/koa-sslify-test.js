@@ -1,7 +1,8 @@
 var expect = require('chai').expect;
 var Koa = require('koa');
 var agent = require('supertest-koa-agent');
-var enforce = require('../index.js').default;
+var koaSSLify = require('../index.js');
+var enforce = koaSSLify.default;
 
 var app = null;
 var subject = null;
@@ -15,7 +16,38 @@ beforeEach(function () {
   });
 
   subject = agent(app);
-})
+});
+
+describe('next() should be returned', () => {
+  let app, subject;
+
+  app = new Koa();
+  app.use(enforce({ resolver: koaSSLify.xForwardedProtoResolver }));
+  app.use(async function (ctx, next) {
+    body = await new Promise(function (resolve) {
+      setTimeout(() => {
+        resolve('OK');
+      }, 0);
+    });
+
+    ctx.response.body = body;
+  });
+
+  subject = agent(app);
+
+  it('should enfore https', function (done) {
+    subject
+      .get('/ssl')
+      .expect(301, done);
+  });
+
+  it('should return ok', function (done) {
+    subject
+      .get('/')
+      .set('x-forwarded-proto', 'https')
+      .expect(200, "OK", done);
+  });
+});
 
 describe('HTTPS not enforced', function () {
   it('should accept non-ssl requests', function (done) {

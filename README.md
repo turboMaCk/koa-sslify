@@ -78,13 +78,13 @@ app.use(sslify({ resolver }));
 
 Those are all resolver provided by default:
 
-| Name                        | Used by                                                                                                                 | Example                                                 |
-|-----------------------------|-------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------|
-| `httpsResolver`             | Node.js server running with tls support                                                                                 | `sslify()`                                              |
-| `xForwardedProtoResolver`   | Heroku, Google Ingress, Nodejitsu                                                                                       | `sslify({ resolver: xForwardedProtoResolver })`         |
-| `azureResolver`             | Azure                                                                                                                   | `sslify({ resolver: azureResolver })`                   |
-| `customProtoHeaderResolver` | any non-standard implementation (Kong)                                                                                  | `sslify({ resolver: customProtoHeader('x-protocol') })` |
-| `forwardedResolver`         | [standard header](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) | `sslify({ resolver: forwardedResolver })`               |
+| Name                        | Used by                                                                                | Example                                                 |
+|-----------------------------|----------------------------------------------------------------------------------------|---------------------------------------------------------|
+| `httpsResolver`             | Node.js server running with tls support                                                | `sslify()`                                              |
+| `xForwardedProtoResolver`   | Heroku, Google Ingress, Nodejitsu                                                      | `sslify({ resolver: xForwardedProtoResolver })`         |
+| `azureResolver`             | Azure                                                                                  | `sslify({ resolver: azureResolver })`                   |
+| `customProtoHeaderResolver` | any non-standard implementation (Kong)                                                 | `sslify({ resolver: customProtoHeader('x-protocol') })` |
+| `forwardedResolver`         | [standard header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Forwarded) | `sslify({ resolver: forwardedResolver })`               |
 
 Some additional information about reverse proxies:
 
