@@ -66,7 +66,7 @@ function redirect(options, ctx) {
   }
 
   // redirect to secure
-  ctx.response.status = options.temporary ? 302 : 301;
+  ctx.response.status = options.temporary ? 307 : 301;
   ctx.response.redirect(redirectTo);
 }
 
