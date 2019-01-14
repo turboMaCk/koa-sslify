@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.0.3
+- fix temporary status (302 -> 307)
+  - not sure how this mistake happend but given it can be consider
+  as being out of spec or bug this I'm going with PATCH bump and hope
+  it won't break anyone downstream
+
 ## 4.0.2
 - **hotfix** return next middleware
 
