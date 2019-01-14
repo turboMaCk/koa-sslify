@@ -183,7 +183,7 @@ describe('Temporary', function() {
 
     agent(app)
       .get('/ssl')
-      .expect(302, done);
+      .expect(307, done);
   });
 });
 

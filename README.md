@@ -14,7 +14,7 @@
 
 [Koa.js](http://koajs.com/) middleware to enforce HTTPS connection on any incoming requests.
 In case of a non-encrypted HTTP request, koa-sslify automatically redirects to an HTTPS address using a `301 permanent redirect`
-(or optionally `302 Temporary Redirect`).
+(or optionally `307 Temporary Redirect`).
 
 Koa SSLify can also work behind reverse proxies (load balancers) like on Heroku, Azure, GCP Ingress etc
 and supports custom implementations of proxy resolvers.
@@ -45,7 +45,7 @@ Default function accepts several options.
 | `hostname`                | String        | `undefined`       | Hostname for redirect (uses request host if not set) |
 | `port`                    | Integer       | `443`             | Port of HTTPS server                                 |
 | `ignoreUrl`               | Boolean       | `false`           | Ignore url path (redirect to domain)                 |
-| `temporary`               | Boolean       | `false`           | Temporary mode (use 302 Temporary Redirect)          |
+| `temporary`               | Boolean       | `false`           | Temporary mode (use 307 Temporary Redirect)          |
 | `skipDefaultPort`         | Boolean       | `true`            | Avoid `:443` port in redirect url                    |
 | `redirectMethods`         | Array<String> | `['GET', 'HEAD']` | Whitelist methods that should be redirected          |
 | `disallowStatus`          | Integer       | `405`             | Status returned for dissalowed methods               |
