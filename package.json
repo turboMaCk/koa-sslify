@@ -8,10 +8,10 @@
     "test": "./node_modules/.bin/mocha --recursive"
   },
   "devDependencies": {
-    "chai": "^4.1.2",
-    "koa": "^2.0.0",
-    "mocha": "^5.2.0",
-    "supertest-koa-agent": "^0.3.0"
+    "chai": "^4.2.0",
+    "koa": "^2.13.0",
+    "mocha": "^8.1.1",
+    "supertest-koa-agent": "^0.3.2"
   },
   "keywords": [
     "koa",
