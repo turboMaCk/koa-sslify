@@ -58,7 +58,11 @@ function redirect(options, ctx) {
   }
 
   // build redirect url
-  const httpsHost = options.hostname || url.parse('http://' + ctx.request.header.host).hostname;
+  const httpsHost = (
+    options.hostname &&
+    typeof options.hostname === 'function' ? options.hostname(ctx) : options.hostname
+    ) || url.parse('http://' + ctx.request.header.host).hostname;
+
   let redirectTo = `https://${httpsHost}${portToUrlString(options)}`;
 
   if(!options.ignoreUrl) {
@@ -74,14 +78,14 @@ function redirect(options, ctx) {
 /**
  * enforceHTTPS
  *
- *   @param    {Hash}       options
- *   @param    {Function}   options[resolver]
- *   @param    {Integer}    options[port]
- *   @param    {String}     options[hostname]
- *   @param    {Boolean}    options[ignoreUrl]
- *   @param    {Boolean}    options[temporary]
- *   @param    {Array}      options[redirectMethods]
- *   @param    {Integer}    options[disallowStatus]
+ *   @param    {Hash}               options
+ *   @param    {Function}           options[resolver]
+ *   @param    {Integer}            options[port]
+ *   @param    {String | Function}  options[hostname]
+ *   @param    {Boolean}            options[ignoreUrl]
+ *   @param    {Boolean}            options[temporary]
+ *   @param    {Array}              options[redirectMethods]
+ *   @param    {Integer}            options[disallowStatus]
  *   @return   {Function}
  *   @api      public
  */
