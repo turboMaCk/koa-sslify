@@ -42,7 +42,7 @@ Default function accepts several options.
 | Name                      | Type          | Default           | Description                                          |
 |---------------------------|---------------|-------------------|------------------------------------------------------|
 | `resolver`                | Function      | `httpsResolver`   | Function used to test if request is secure           |
-| `hostname`                | String        | `undefined`       | Hostname for redirect (uses request host if not set) |
+| `hostname`                | Function      | `undefined`       | Function that takes the request hostname string as its only argument and returns the desired hostname to use as a result. Uses request hostname if not set or return value is falsy |
 | `port`                    | Integer       | `443`             | Port of HTTPS server                                 |
 | `ignoreUrl`               | Boolean       | `false`           | Ignore url path (redirect to domain)                 |
 | `temporary`               | Boolean       | `false`           | Temporary mode (use 307 Temporary Redirect)          |

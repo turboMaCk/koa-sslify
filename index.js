@@ -57,8 +57,12 @@ function redirect(options, ctx) {
     return;
   }
 
+  const currentHostname = url.parse('http://' + ctx.request.header.host).hostname;
+
   // build redirect url
-  const httpsHost = options.hostname || url.parse('http://' + ctx.request.header.host).hostname;
+  const httpsHost = (typeof options.hostname === 'function' && options.hostname(currentHostname))
+    || currentHostname;
+
   let redirectTo = `https://${httpsHost}${portToUrlString(options)}`;
 
   if(!options.ignoreUrl) {

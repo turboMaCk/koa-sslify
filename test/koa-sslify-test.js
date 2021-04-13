@@ -127,13 +127,31 @@ describe('Hostname', function() {
       .expect('location', new RegExp('^https://127.0.0.1[\\S]*/ssl$'), done);
   });
 
-  it('should redirect to specified host', function (done) {
-    app.use(enforce({ hostname: 'github.com' }));
+  it('should redirect to host returned by function', function (done) {
+    app.use(enforce({
+      hostname: (hostname) => {
+        if (hostname !== '127.0.0.1') {
+          throw new Error('Hostname does not look right')
+        }
+        return 'gitlab.com'
+      },
+    }));
 
     agent(app)
       .get('/ssl')
       .expect(301)
-      .expect('location', new RegExp('^https://github.com[\\S]*/ssl$'), done);
+      .expect('location', new RegExp('^https://gitlab.com[\\S]*/ssl$'), done);
+  });
+
+  it('should redirect to default host when nothing is returned by function', function (done) {
+    app.use(enforce({
+      hostname: (ctx) => {},
+    }));
+
+    agent(app)
+      .get('/ssl')
+      .expect(301)
+      .expect('location', new RegExp('^https://127.0.0.1[\\S]*/ssl$'), done);
   });
 });
 
