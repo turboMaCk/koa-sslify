@@ -81,7 +81,7 @@ function redirect(options, ctx) {
  *   @param    {Hash}       options
  *   @param    {Function}   options[resolver]
  *   @param    {Integer}    options[port]
- *   @param    {String}     options[hostname]
+ *   @param    {Function}   options[hostname]
  *   @param    {Boolean}    options[ignoreUrl]
  *   @param    {Boolean}    options[temporary]
  *   @param    {Array}      options[redirectMethods]
