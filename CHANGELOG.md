@@ -1,5 +1,10 @@
 # Changelog
 
+## 5.0.0
+- Replace `hostname` string configuration with more flexible `hostname => hostname` function
+  to allow more flexible redirect rules between domains & sub domains. For backwad compatibility use `() => "mydomain.com"`
+  credits @newhouse
+
 ## 4.0.3
 - fix temporary status (302 -> 307)
   - not sure how this mistake happend but given it can be consider
