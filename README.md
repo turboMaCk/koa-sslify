@@ -1,7 +1,7 @@
 <div align="center">
     <h1>Koa SSLify</h1>
-    <a href="https://travis-ci.org/turboMaCk/koa-sslify">
-        <img src="https://travis-ci.org/turboMaCk/koa-sslify.svg?branch=master" alt="build">
+    <a href="https://github.com/turboMaCk/koa-sslify/actions/workflows/test.yml">
+      <img src="https://github.com/github/docs/actions/workflows/main.yml/badge.svg?branch=master">
     </a>
     <a href="https://codeclimate.com/github/turboMaCk/koa-sslify">
       <img src="https://codeclimate.com/github/turboMaCk/koa-sslify/badges/gpa.svg" alt="code climate">
