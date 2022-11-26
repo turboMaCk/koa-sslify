@@ -48,13 +48,13 @@ Default function accepts several options.
 | `temporary`               | Boolean       | `false`           | Temporary mode (use 307 Temporary Redirect)          |
 | `skipDefaultPort`         | Boolean       | `true`            | Avoid `:443` port in redirect url                    |
 | `redirectMethods`         | Array<String> | `['GET', 'HEAD']` | Whitelist methods that should be redirected          |
-| `disallowStatus`          | Integer       | `405`             | Status returned for dissalowed methods               |
+| `disallowStatus`          | Integer       | `405`             | Status returned for disallowed methods               |
 
 ### Resolvers
 
 Resolver is a function from classic Koa `ctx` object to boolean.
 This function is used to determine if request is or is not secured (true means is secure).
-Middlware calls this function and based on its returned value either passes
+Middleware calls this function and based on its returned value either passes
 control to next middleware or responds to the request with appropriate redirect response.
 
 There are several resolvers provided by this library but it should be very easy to implement
@@ -80,17 +80,17 @@ Those are all resolver provided by default:
 
 | Name                        | Used by                                                                                | Example                                                 |
 |-----------------------------|----------------------------------------------------------------------------------------|---------------------------------------------------------|
-| `httpsResolver`             | Node.js server running with tls support                                                | `sslify()`                                              |
-| `xForwardedProtoResolver`   | Heroku, Google Ingress, Nodejitsu                                                      | `sslify({ resolver: xForwardedProtoResolver })`         |
+| `httpsResolver`             | Node.js server running with TLS support                                                | `sslify()`                                              |
+| `xForwardedProtoResolver`   | Heroku, Google Ingress                                                                 | `sslify({ resolver: xForwardedProtoResolver })`         |
 | `azureResolver`             | Azure                                                                                  | `sslify({ resolver: azureResolver })`                   |
 | `customProtoHeaderResolver` | any non-standard implementation (Kong)                                                 | `sslify({ resolver: customProtoHeader('x-protocol') })` |
 | `forwardedResolver`         | [standard header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Forwarded) | `sslify({ resolver: forwardedResolver })`               |
 
 Some additional information about reverse proxies:
 
-#### Reverse Proxies (Heroku, Nodejitsu, GCE Ingress and others)
+#### Reverse Proxies (Heroku, GCE Ingress and others)
 
-Heroku, nodejitsu, GCE Ingress and other hosters often use reverse proxies which offer SSL endpoints
+Heroku, GCE Ingress and other hosters often use reverse proxies which offer SSL endpoints
 but then forward unencrypted HTTP traffic to the website.
 This makes it difficult to detect if the original request was indeed via HTTPS. Luckily,
 most reverse proxies set the `x-forwarded-proto` header flag with the original request scheme.
@@ -186,7 +186,7 @@ app.listen(3000);
 ### Redirect Methods
 
 By default only `GET` and `HEAD` methods are whitelisted for redirect.
-koa-sslify will respond with `405` with appropriete `Allow` header by default.
+koa-sslify will respond with `405` with appropriate `Allow` header by default.
 You can change whitelisted methods by passing `redirectMethods` array to options
 as well as change status for disallowed methods using `disallowStatus`.
 
