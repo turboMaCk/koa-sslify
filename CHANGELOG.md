@@ -1,5 +1,10 @@
 # Changelog
 
+## 5.0.1
+- Improve documentation credits @tommoor
+- Bump dependecies
+- Switch to Github actions
+
 ## 5.0.0
 - Replace `hostname` string configuration with more flexible `hostname => hostname` function
   to allow more flexible redirect rules between domains & sub domains. For backwad compatibility use `() => "mydomain.com"`
