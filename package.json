@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "koa": "^2.13.0",
+    "koa": "^3.0.1",
     "mocha": "^10.1.0",
     "supertest-koa-agent": "^0.3.2"
   },
@@ -27,6 +27,6 @@
   "author": "Marek Fajkus <marek.faj@gmail.com>",
   "license": "MIT",
   "engines": {
-    "node": ">6.0.0"
+    "node": ">16.0.0"
   }
 }

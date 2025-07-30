@@ -21,7 +21,6 @@ const defaults = {
   resolver: httpsResolver,
   hostname: undefined,
   port: 443,
-  skipDefaultPort: true,
   ignoreUrl: false,
   temporary: false,
   redirectMethods: ['GET', 'HEAD'],
@@ -36,12 +35,6 @@ function applyOptions(options) {
   Object.assign(settings, defaults, options);
 
   return settings;
-}
-
-
-// skip 443 ports in urls
-function portToUrlString(options) {
-  return (options.skipDefaultPort && options.port === 443) ? '' : ':' + options.port;
 }
 
 
@@ -63,7 +56,7 @@ function redirect(options, ctx) {
   const httpsHost = (typeof options.hostname === 'function' && options.hostname(currentHostname))
     || currentHostname;
 
-  let redirectTo = `https://${httpsHost}${portToUrlString(options)}`;
+  let redirectTo = `https://${httpsHost}:${options.port}`;
 
   if(!options.ignoreUrl) {
     redirectTo += ctx.request.url;
