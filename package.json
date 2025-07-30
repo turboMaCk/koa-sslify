@@ -1,6 +1,6 @@
 {
   "name": "koa-sslify",
-  "version": "5.0.1",
+  "version": "6.0.0",
   "description": "Enforces HTTPS for node.js koa projects",
   "main": "index.js",
   "repository": "https://github.com/turboMaCk/koa-sslify.git",
