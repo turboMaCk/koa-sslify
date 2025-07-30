@@ -46,7 +46,6 @@ Default function accepts several options.
 | `port`                    | Integer       | `443`             | Port of HTTPS server                                 |
 | `ignoreUrl`               | Boolean       | `false`           | Ignore url path (redirect to domain)                 |
 | `temporary`               | Boolean       | `false`           | Temporary mode (use 307 Temporary Redirect)          |
-| `skipDefaultPort`         | Boolean       | `true`            | Avoid `:443` port in redirect url                    |
 | `redirectMethods`         | Array<String> | `['GET', 'HEAD']` | Whitelist methods that should be redirected          |
 | `disallowStatus`          | Integer       | `405`             | Status returned for disallowed methods               |
 
@@ -189,13 +188,6 @@ By default only `GET` and `HEAD` methods are whitelisted for redirect.
 koa-sslify will respond with `405` with appropriate `Allow` header by default.
 You can change whitelisted methods by passing `redirectMethods` array to options
 as well as change status for disallowed methods using `disallowStatus`.
-
-### Skip Default Port in Redirect URL
-
-**By default port is excluded from redirect url if it's set to `443`.**
-Since `443` is default port for `HTTPS` browser will use it by default anyway so there
-is no need to explicitly return it as part of URL. Anyway in case you need to **always return port as part of URL string**
-you can pass options with `skipDefaultPort: false` to do the trick.
 
 ## License
 

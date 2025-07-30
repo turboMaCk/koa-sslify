@@ -184,15 +184,6 @@ describe('Skip port', function() {
       .expect(301)
       .expect('location', new RegExp('^https:[\\S]*/ssl$'), done);
   });
-
-  it('should not skip port', function (done) {
-    app.use(enforce({ skipDefaultPort: false }));
-
-    agent(app)
-      .get('/ssl')
-      .expect(301)
-      .expect('location', new RegExp('^https:[\\S]*:443/ssl$'), done);
-  });
 });
 
 describe('Temporary', function() {

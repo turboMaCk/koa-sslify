@@ -1,5 +1,10 @@
 # Changelog
 
+## 6.0.0
+- Compatibility with koa 3
+- Remove setting for `skipDefaultport` due to incompatibility with koa 3
+  - default behaviour is now enforced
+
 ## 5.0.1
 - Improve documentation credits @tommoor
 - Bump dependecies
